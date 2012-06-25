@@ -1,4 +1,6 @@
-package com.arguslabs.fayeclient;
+package com.b3rwynmobile.fayeclient;
+
+import  com.b3rwynmobile.fayeclient.R;
 
 import android.app.Activity;
 import android.content.Intent;

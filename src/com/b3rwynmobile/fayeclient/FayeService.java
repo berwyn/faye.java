@@ -1,4 +1,4 @@
-package com.arguslabs.fayeclient;
+package com.b3rwynmobile.fayeclient;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,9 +10,9 @@ public class FayeService extends Service {
 	
 	final private String TAG = getClass().getSimpleName();
 	
-	final private static String FAYE_HOST = "ws://YOUR_SERVICE_URL";
-	final private static String FAYE_PORT = "5556";
-	final private static String authToken = "SECRET_TOKEN";
+	final private static String FAYE_HOST = "ws://push01.cloudsdale.org";
+	final private static String FAYE_PORT = "80";
+	final private static String authToken = "e854ebd38d63042f210214f95b5281b8934b359821cade18e52549e3788ef713";
 	final private static String mainChannel = "/notifications";
 
 	FayeClient fayeClient;

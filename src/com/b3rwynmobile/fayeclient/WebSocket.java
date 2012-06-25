@@ -1,4 +1,4 @@
-package com.arguslabs.fayeclient;
+package com.b3rwynmobile.fayeclient;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
