@@ -2,130 +2,69 @@ package com.b3rwynmobile.fayeclient;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
 
+/**
+ * Service class to run Faye
+ * 
+ * @author Jamison Greeley (atomicrat2552@gmail.com)
+ */
 public class FayeService extends Service {
 
-	final private String		TAG			= getClass().getSimpleName();
+	// Debug tag
+	@SuppressWarnings("unused")
+	private final String		TAG				= "FayeService";
 
-	final private static String	FAYE_HOST	= "ws://push01.cloudsdale.org";
-	final private static String	FAYE_PORT	= "80";
-	final private static String	authToken	= "e854ebd38d63042f210214f95b5281b8934b359821cade18e52549e3788ef713";
-	final private static String	mainChannel	= "/notifications";
+	// String constants
+	final private static String	FAYE_HOST		= "ws://YOUR_SERVICE_URL";
+	final private static String	FAYE_PORT		= "5556";
+	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
+	final private static String	INITIAL_CHANNEL	= "/notifications";
 
-	FayeClient					fayeClient;
+	// Data objects
+	private FayeClient			faye;
+	private FayeListener		fayeListener;
 
+	/**
+	 * Returns the Binder to interact with Faye. This is the prefered method to
+	 * run the service, and starting from an Intent is not currently supported
+	 */
 	@Override
 	public IBinder onBind(Intent intent) {
-		startFaye();
+		// TODO return the Message binder
+		// TODO start Faye
 		return null;
 	}
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-	}
-
+	/**
+	 * Stops Faye when the Service is being destroyed by the OS
+	 */
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
-
 		stopFaye();
-	}
-
-	@Override
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);
-
-		startFaye();
+		super.onDestroy();
 	}
 
 	/**
-	 * Public section
+	 * Starts the Faye client
 	 */
-	private void startFaye() {
-		fayeClient = new FayeClient(FAYE_HOST + ":" + FAYE_PORT + "/faye",
-				authToken, mainChannel);
-		fayeClient.setListener(fayeClientListener);
-		fayeClient.connectToServer();
-		Toast.makeText(getApplicationContext(), "FayeService Started!",
-				Toast.LENGTH_LONG).show();
+	public void startFaye() {
+		faye = new FayeClient(FAYE_HOST + ":" + FAYE_PORT, AUTH_TOKEN,
+				INITIAL_CHANNEL);
+		fayeListener = new FayeListener();
+		faye.setFayeListener(fayeListener);
+		faye.openSocketConnection();
+		faye.connectFaye();
 	}
 
+	/**
+	 * Stops the Faye client
+	 */
 	public void stopFaye() {
-		if (fayeClient.isWebSocketConnected())
-			fayeClient.disconnectFromServer();
-		Toast.makeText(getApplicationContext(), "FayeService Stopped!",
-				Toast.LENGTH_LONG).show();
-	}
-
-	/**
-	 * FayeClientListener
-	 */
-	FayeClientListener	fayeClientListener	= new FayeClientListener() {
-
-												@Override
-												public void messageReceieved(
-														FayeClient fc,
-														String msg) {
-													Log.i(TAG,
-															"MESSAGE FROM SERVER: "
-																	+ msg);
-													Toast.makeText(
-															getApplicationContext(),
-															"Message from server: "
-																	+ msg,
-															Toast.LENGTH_LONG)
-															.show();
-												}
-
-												@Override
-												public void disconnectedFromServer(
-														FayeClient fc) {
-													Log.i(TAG,
-															"DISCONNECTED FROM SERVER");
-													Toast.makeText(
-															getApplicationContext(),
-															"Disconnected from faye server",
-															Toast.LENGTH_LONG)
-															.show();
-													fc.connectToServer(); // reconnect
-																			// when
-																			// disconnect
-												}
-
-												@Override
-												public void connectedToServer(
-														FayeClient fc) {
-													Log.i(TAG,
-															"CONNECTED TO SERVER");
-													fc.subscribeToChannel(mainChannel);
-													Toast.makeText(
-															getApplicationContext(),
-															"Connected to faye server on channel: "
-																	+ mainChannel,
-															Toast.LENGTH_LONG)
-															.show();
-												}
-											};
-
-	/**
-	 * Hnadler class to handle messages coming in to the service because Fuck
-	 * Tim WhatsHisAss for making the service useless
-	 * 
-	 * @author Jamison Greeley (atomicrat2552@gmail.com)
-	 */
-	private class FayeServiceHandler extends Handler {
-
-		@Override
-		public void handleMessage(Message msg) {
-			Bundle data = msg.getData();
+		if (faye.isSocketConnected()) {
+			faye.disconnectFaye();
+			faye.closeSocketConnection();
 		}
-
 	}
+
 }
