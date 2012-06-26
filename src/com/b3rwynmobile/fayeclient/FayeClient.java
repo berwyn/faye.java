@@ -604,8 +604,14 @@ public class FayeClient {
 		 */
 		@Override
 		public void onConnect() {
-			// TODO Auto-generated method stub
+			// The socket has connected
+			FayeClient.this.socketConnected = true;
 
+			// Alert the listener that socket connection is connected
+			if (FayeClient.this.fayeListener != null
+					&& FayeClient.this.fayeListener instanceof FayeListener) {
+				FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
+			}
 		}
 
 		/**
@@ -654,7 +660,15 @@ public class FayeClient {
 					// Get the server connected
 					FayeClient.this.connectFaye();
 				} else {
-					// TODO handle bad connection
+					// The socket isn't open
+					FayeClient.this.socketConnected = false;
+
+					// Tell the listener we're disconnected
+					if (FayeClient.this.fayeListener != null
+							&& FayeClient.this.fayeListener instanceof FayeListener) {
+						FayeClient.this.fayeListener
+								.disconnectedFromServer(FayeClient.this);
+					}
 				}
 			}
 
