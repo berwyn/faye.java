@@ -21,7 +21,19 @@ public class FayeListener {
 	 *            The client that's been disconnected
 	 */
 	public void disconnectedFromServer(FayeClient faye) {
-		// TODO RECONNECT
+		if (!faye.isDisconnectExpected()) {
+			// If the disconnect isn't expected
+			if (faye.isSocketConnected()) {
+				// If the socket is still open, reconnect push client
+				faye.connectFaye();
+			} else {
+				// Else open the socket and connect Faye
+				faye.openSocketConnection();
+				faye.connectFaye();
+			}
+		} else {
+			// TODO logic for when connection is manually closed
+		}
 	}
 
 	/**

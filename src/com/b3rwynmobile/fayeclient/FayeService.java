@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
- * Service class to run Faye
+ * Service class to run Faye. Provides a singleton method to get the running
+ * instance.
  * 
  * @author Jamison Greeley (atomicrat2552@gmail.com)
  */
@@ -21,9 +22,19 @@ public class FayeService extends Service {
 	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
 	final private static String	INITIAL_CHANNEL	= "/notifications";
 
+	// Stored static instance of the service
+	private static FayeService	instance;
+
 	// Data objects
 	private FayeClient			faye;
 	private FayeListener		fayeListener;
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+
+		instance = this;
+	}
 
 	/**
 	 * Returns the Binder to interact with Faye. This is the prefered method to
@@ -43,6 +54,24 @@ public class FayeService extends Service {
 	public void onDestroy() {
 		stopFaye();
 		super.onDestroy();
+	}
+
+	/**
+	 * Returns a pointer to the currently running service
+	 * 
+	 * @return The instance of the service that running
+	 */
+	public static FayeService getInstance() {
+		return instance;
+	}
+
+	/**
+	 * Get the service's FayeListener
+	 * 
+	 * @return The FayeListener that the service attached to the client
+	 */
+	public FayeListener getFayeListener() {
+		return fayeListener;
 	}
 
 	/**
