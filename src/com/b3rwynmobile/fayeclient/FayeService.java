@@ -1,8 +1,10 @@
 package com.b3rwynmobile.fayeclient;
 
-import android.app.Service;
+import android.app.IntentService;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
+import android.widget.Toast;
 
 /**
  * Service class to run Faye. Provides a singleton method to get the running
@@ -10,7 +12,7 @@ import android.os.IBinder;
  * 
  * @author Jamison Greeley (atomicrat2552@gmail.com)
  */
-public class FayeService extends Service {
+public class FayeService extends IntentService {
 
 	// Debug tag
 	@SuppressWarnings("unused")
@@ -22,18 +24,39 @@ public class FayeService extends Service {
 	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
 	final private static String	INITIAL_CHANNEL	= "/notifications";
 
-	// Stored static instance of the service
-	private static FayeService	instance;
-
 	// Data objects
 	private FayeClient			faye;
 	private FayeListener		fayeListener;
+	private FayeBinder			fayeBinder;
+
+	/**
+	 * Default constructor
+	 */
+	public FayeService() {
+		super("FayeService");
+	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		// Debug toast
+		Toast.makeText(getApplicationContext(), "Faye Service created",
+				Toast.LENGTH_SHORT).show();
+		
+		// Create the binder
+		fayeBinder = new FayeBinder();
+		
+		// Create the Faye client and listener
+		faye = new FayeClient(FAYE_HOST + ":" + FAYE_PORT, AUTH_TOKEN,
+				INITIAL_CHANNEL);
+		fayeListener = new FayeListener();
+		faye.setFayeListener(fayeListener);
+	}
 
-		instance = this;
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	/**
@@ -42,9 +65,12 @@ public class FayeService extends Service {
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO return the Message binder
-		// TODO start Faye
-		return null;
+		return fayeBinder;
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -57,33 +83,13 @@ public class FayeService extends Service {
 	}
 
 	/**
-	 * Returns a pointer to the currently running service
-	 * 
-	 * @return The instance of the service that running
-	 */
-	public static FayeService getInstance() {
-		return instance;
-	}
-
-	/**
-	 * Get the service's FayeListener
-	 * 
-	 * @return The FayeListener that the service attached to the client
-	 */
-	public FayeListener getFayeListener() {
-		return fayeListener;
-	}
-
-	/**
 	 * Starts the Faye client
 	 */
 	public void startFaye() {
-		faye = new FayeClient(FAYE_HOST + ":" + FAYE_PORT, AUTH_TOKEN,
-				INITIAL_CHANNEL);
-		fayeListener = new FayeListener();
-		faye.setFayeListener(fayeListener);
 		faye.openSocketConnection();
 		faye.connectFaye();
+		Toast.makeText(getApplicationContext(), "Faye Started",
+				Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -93,6 +99,23 @@ public class FayeService extends Service {
 		if (faye.isSocketConnected()) {
 			faye.disconnectFaye();
 			faye.closeSocketConnection();
+		}
+	}
+
+	/**
+	 * Binder class to interact with the service
+	 * 
+	 * @author Jamison Greeley (atomicrat2552@gmail.com)
+	 */
+	public class FayeBinder extends Binder {
+
+		/**
+		 * Public method to get the FayeClient the service is maintaining
+		 * 
+		 * @return The FayeClient hosted by the service
+		 */
+		public FayeClient getFayeClient() {
+			return FayeService.this.faye;
 		}
 	}
 

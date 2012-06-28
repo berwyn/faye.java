@@ -7,6 +7,10 @@ import java.util.List;
 
 import android.util.Log;
 
+import com.b3rwynmobile.fayeclient.autobahn.WebSocket;
+import com.b3rwynmobile.fayeclient.autobahn.WebSocketConnection;
+import com.b3rwynmobile.fayeclient.autobahn.WebSocketConnectionHandler;
+import com.b3rwynmobile.fayeclient.autobahn.WebSocketException;
 import com.google.gson.Gson;
 
 /**
@@ -35,7 +39,7 @@ public class FayeClient {
 	private static final String	FAYE_DISCONNECT_STRING	= "{\"clientId\":\"%s\",\"connectionType\":\"websocket\",\"channel\":\"/meta/disconnect\"}";
 
 	// Data objects
-	private WebSocketClient		webSocket;
+	private WebSocket			webSocket;
 	private FayeListener		fayeListener;
 	private FayeHandler			fayeHandler;
 
@@ -101,7 +105,7 @@ public class FayeClient {
 	public void setFayeListener(FayeListener mFayeListener) {
 		this.fayeListener = mFayeListener;
 	}
-	
+
 	/**
 	 * Whether or not the client has a websocket connection to the push server
 	 * 
@@ -135,19 +139,24 @@ public class FayeClient {
 	 */
 	public void openSocketConnection() {
 		Log.d(TAG, "Faye is attempting to open the socket connection");
-		if (webSocket != null) {
-			try {
-				webSocket.disconnect();
-			} catch (IOException e) {
-				// TODO Handle exception coming out of socket close
-			}
 
-			webSocket = new WebSocketClient(
-					URI.create(fayeUrl),
-					(com.b3rwynmobile.fayeclient.WebSocketClient.Handler) fayeHandler,
-					null);
-			webSocket.connect();
+		if (webSocket != null) {
+			webSocket.disconnect();
 		}
+
+		// Create the socket
+		webSocket = new WebSocketConnection();
+
+		// Try to connect
+		try {
+			webSocket.connect(fayeUrl, fayeHandler);
+			this.socketConnected = true;
+		} catch (WebSocketException e) {
+			Log.e(TAG, "Faye Websocket error: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		Log.d(TAG, "Faye has opened the socket");
 	}
 
 	/**
@@ -157,11 +166,10 @@ public class FayeClient {
 	public void closeSocketConnection() {
 		Log.d(TAG, "Faye is attempting to close the socket connection");
 		if (webSocket != null) {
-			try {
-				webSocket.disconnect();
-			} catch (IOException e) {
-				// TODO Handle exception coming out of socket close
-			}
+			webSocket.disconnect();
+			this.socketConnected = false;
+
+			Log.d(TAG, "Faye has closed the socket connection");
 		}
 	}
 
@@ -169,10 +177,26 @@ public class FayeClient {
 	 * Connect the push client. The websocket must be open for this to work
 	 */
 	public void connectFaye() {
+		// Connect
 		Log.d(TAG, "Faye is attempting to open a connection to the push server");
+
 		String connect = String.format(FAYE_CONNECT_STRING, fayeClientId);
-		webSocket.send(connect);
+		webSocket.sendTextMessage(connect);
+
+		// Socket open, handshake push server
+		handshake();
+
+		// Set the object status
+		this.fayeConnected = true;
 		this.disconnectExpected = false;
+
+		// Alert the listener that socket connection is connected
+		if (FayeClient.this.fayeListener != null
+				&& FayeClient.this.fayeListener instanceof FayeListener) {
+			FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
+		}
+
+		Log.d(TAG, "Faye has opened the push connection");
 	}
 
 	/**
@@ -180,18 +204,20 @@ public class FayeClient {
 	 * action, you must close it manually
 	 */
 	public void disconnectFaye() {
-		Log.d(TAG,
-				"Faye is attempting to close the connection to the push server");
+		Log.d(TAG, "Faye is attempting to close the push connection");
 		String disconnect = String.format(FAYE_DISCONNECT_STRING, fayeClientId);
-		webSocket.send(disconnect);
+		webSocket.sendTextMessage(disconnect);
+		this.fayeConnected = false;
 		this.disconnectExpected = true;
+
+		Log.d(TAG, "Faye has closed the push connection");
 	}
 
 	/**
 	 * Handshakes the push client and server
 	 */
 	public void handshake() {
-		webSocket.send(HANDSHAKE_STRING);
+		webSocket.sendTextMessage(HANDSHAKE_STRING);
 	}
 
 	/**
@@ -205,7 +231,7 @@ public class FayeClient {
 				+ "\"");
 		String subscribe = String.format(SUBSCRIBE_STRING, fayeClientId,
 				(channel.equals("") ? activeSubchannels : channel), authToken);
-		webSocket.send(subscribe);
+		webSocket.sendTextMessage(subscribe);
 	}
 
 	/**
@@ -219,7 +245,7 @@ public class FayeClient {
 				+ channel + "\"");
 		String unsubscribe = String.format(UNSUBSCRIBE_STRING, fayeClientId,
 				(channel.equals("") ? activeSubchannels : channel));
-		webSocket.send(unsubscribe);
+		webSocket.sendTextMessage(unsubscribe);
 	}
 
 	/**
@@ -227,31 +253,26 @@ public class FayeClient {
 	 * 
 	 * @author Jamison Greeley (atomicrat2552@gmail.com)
 	 */
-	public class FayeHandler implements WebSocketClient.Handler {
+	public class FayeHandler extends WebSocketConnectionHandler {
+
 		/**
-		 * Method to handle behavior when the websocket connects
+		 * Method to handle behavior when the web socket connects
 		 * 
 		 * @see super{@link #onConnect()}
 		 */
 		@Override
-		public void onConnect() {
+		public void onOpen() {
 			// The socket has connected
 			FayeClient.this.socketConnected = true;
-
-			// Alert the listener that socket connection is connected
-			if (FayeClient.this.fayeListener != null
-					&& FayeClient.this.fayeListener instanceof FayeListener) {
-				FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
-			}
 		}
 
 		/**
-		 * Method to handle when the webscoket receives a string message
+		 * Method to handle when the web socket receives a string message
 		 * 
 		 * @see super{@link #onMessage(String)}
 		 */
 		@Override
-		public void onMessage(String message) {
+		public void onTextMessage(String message) {
 			// Deserialize the message
 			FayeMessage fayeMessage = new Gson().fromJson(message,
 					FayeMessage.class);
@@ -381,7 +402,7 @@ public class FayeClient {
 		 * Method to handle when the websocket receives binary data
 		 */
 		@Override
-		public void onMessage(byte[] data) {
+		public void onBinaryMessage(byte[] data) {
 			// Faye does not send binary data
 		}
 
@@ -389,18 +410,10 @@ public class FayeClient {
 		 * Method to handle socket behavior when the connection severs
 		 */
 		@Override
-		public void onDisconnect(int code, String reason) {
-			// TODO Auto-generated method stub
-
+		public void onClose(int code, String reason) {
+			// The socket is closed
+			FayeClient.this.socketConnected = false;
 		}
 
-		/**
-		 * Method to handle when the socket encounters an error
-		 */
-		@Override
-		public void onError(Exception error) {
-			// TODO Auto-generated method stub
-
-		}
 	}
 }
