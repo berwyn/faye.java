@@ -48,6 +48,7 @@ public class FayeClient {
 	// Status fields
 	private boolean				socketConnected;
 	private boolean				fayeConnected;
+	private boolean				disconnectExpected;
 
 	/**
 	 * Simplified constructor
@@ -79,6 +80,7 @@ public class FayeClient {
 		this.activeSubchannels.add(channel);
 		this.socketConnected = false;
 		this.fayeConnected = false;
+		this.disconnectExpected = false;
 	}
 
 	/**
@@ -119,24 +121,37 @@ public class FayeClient {
 	}
 
 	/**
+	 * Whether or not the client disconnection is expected
+	 * 
+	 * @return The status of whether disconnect was expected
+	 */
+	public boolean isDisconnectExpected() {
+		return disconnectExpected;
+	}
+
+	/**
 	 * Opens a websocket connection to the webserver. This must be done before
 	 * connecting the push client
 	 */
 	public void openSocketConnection() {
 		Log.d(TAG, "Faye is attempting to open the socket connection");
+
 		if (webSocket != null) {
 			try {
 				webSocket.disconnect();
 			} catch (IOException e) {
 				// TODO Handle exception coming out of socket close
 			}
-
-			webSocket = new WebSocketClient(
-					URI.create(fayeUrl),
-					(com.b3rwynmobile.fayeclient.WebSocketClient.Handler) fayeHandler,
-					null);
-			webSocket.connect();
 		}
+
+		webSocket = new WebSocketClient(
+				URI.create(fayeUrl),
+				(com.b3rwynmobile.fayeclient.WebSocketClient.Handler) fayeHandler,
+				null);
+		webSocket.connect();
+		this.socketConnected = true;
+
+		Log.d(TAG, "Faye has opened the socket");
 	}
 
 	/**
@@ -148,6 +163,9 @@ public class FayeClient {
 		if (webSocket != null) {
 			try {
 				webSocket.disconnect();
+				this.socketConnected = false;
+
+				Log.d(TAG, "Faye has closed the socket connection");
 			} catch (IOException e) {
 				// TODO Handle exception coming out of socket close
 			}
@@ -158,9 +176,26 @@ public class FayeClient {
 	 * Connect the push client. The websocket must be open for this to work
 	 */
 	public void connectFaye() {
+		// Connect
 		Log.d(TAG, "Faye is attempting to open a connection to the push server");
+
 		String connect = String.format(FAYE_CONNECT_STRING, fayeClientId);
 		webSocket.send(connect);
+
+		// Socket open, handshake push server
+		handshake();
+
+		// Set the object status
+		this.fayeConnected = true;
+		this.disconnectExpected = false;
+
+		// Alert the listener that socket connection is connected
+		if (FayeClient.this.fayeListener != null
+				&& FayeClient.this.fayeListener instanceof FayeListener) {
+			FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
+		}
+
+		Log.d(TAG, "Faye has opened the push connection");
 	}
 
 	/**
@@ -168,10 +203,13 @@ public class FayeClient {
 	 * action, you must close it manually
 	 */
 	public void disconnectFaye() {
-		Log.d(TAG,
-				"Faye is attempting to close the connection to the push server");
+		Log.d(TAG, "Faye is attempting to close the push connection");
 		String disconnect = String.format(FAYE_DISCONNECT_STRING, fayeClientId);
 		webSocket.send(disconnect);
+		this.fayeConnected = false;
+		this.disconnectExpected = true;
+
+		Log.d(TAG, "Faye has closed the push connection");
 	}
 
 	/**
@@ -214,7 +252,7 @@ public class FayeClient {
 	 * 
 	 * @author Jamison Greeley (atomicrat2552@gmail.com)
 	 */
-	private class FayeHandler implements WebSocketClient.Handler {
+	public class FayeHandler implements WebSocketClient.Handler {
 		/**
 		 * Method to handle behavior when the websocket connects
 		 * 
@@ -224,12 +262,6 @@ public class FayeClient {
 		public void onConnect() {
 			// The socket has connected
 			FayeClient.this.socketConnected = true;
-
-			// Alert the listener that socket connection is connected
-			if (FayeClient.this.fayeListener != null
-					&& FayeClient.this.fayeListener instanceof FayeListener) {
-				FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
-			}
 		}
 
 		/**
@@ -377,8 +409,8 @@ public class FayeClient {
 		 */
 		@Override
 		public void onDisconnect(int code, String reason) {
-			// TODO Auto-generated method stub
-
+			// The socket is closed
+			FayeClient.this.socketConnected = false;
 		}
 
 		/**
