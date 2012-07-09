@@ -19,9 +19,9 @@ public class FayeService extends IntentService {
 	private final String		TAG				= "FayeService";
 
 	// String constants
-	final private static String	FAYE_HOST		= "ws://YOUR_SERVICE_URL";
-	final private static String	FAYE_PORT		= "5556";
-	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
+	final private static String	FAYE_HOST		= "ws://push01.cloudsdale.org";
+	final private static String	FAYE_PORT		= "80";
+	final private static String	AUTH_TOKEN		= "e854ebd38d63042f210214f95b5281b8934b359821cade18e52549e3788ef713";
 	final private static String	INITIAL_CHANNEL	= "/notifications";
 
 	// Data objects
