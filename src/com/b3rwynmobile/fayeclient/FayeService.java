@@ -19,9 +19,15 @@ public class FayeService extends IntentService {
 	private final String		TAG				= "FayeService";
 
 	// String constants
+<<<<<<< HEAD
 	final private static String	FAYE_HOST		= "ws://push01.cloudsdale.org";
 	final private static String	FAYE_PORT		= "80";
 	final private static String	AUTH_TOKEN		= "e854ebd38d63042f210214f95b5281b8934b359821cade18e52549e3788ef713";
+=======
+	final private static String	FAYE_HOST		= "ws://YOUR_SERVICE_URL";
+	final private static String	FAYE_PORT		= "5556";
+	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
+>>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
 	final private static String	INITIAL_CHANNEL	= "/notifications";
 
 	// Data objects
@@ -48,8 +54,11 @@ public class FayeService extends IntentService {
 		fayeBinder = new FayeBinder();
 		
 		// Create the Faye client and listener
+<<<<<<< HEAD
 		faye = new FayeClient(FAYE_HOST + ":" + FAYE_PORT, AUTH_TOKEN,
 				INITIAL_CHANNEL);
+=======
+>>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
 		fayeListener = new FayeListener();
 		faye.setFayeListener(fayeListener);
 	}
@@ -86,20 +95,30 @@ public class FayeService extends IntentService {
 	 * Starts the Faye client
 	 */
 	public void startFaye() {
+<<<<<<< HEAD
 		faye.openSocketConnection();
 		faye.connectFaye();
 		Toast.makeText(getApplicationContext(), "Faye Started",
 				Toast.LENGTH_SHORT).show();
+=======
+		Toast.makeText(getApplicationContext(), "Faye Started",
+				Toast.LENGTH_SHORT).show();
+		// TODO start Faye
+>>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
 	}
 
 	/**
 	 * Stops the Faye client
 	 */
 	public void stopFaye() {
+<<<<<<< HEAD
 		if (faye.isSocketConnected()) {
 			faye.disconnectFaye();
 			faye.closeSocketConnection();
 		}
+=======
+		// TODO stop Faye
+>>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
 	}
 
 	/**
