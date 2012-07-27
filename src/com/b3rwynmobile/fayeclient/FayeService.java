@@ -48,8 +48,6 @@ public class FayeService extends IntentService {
 		fayeBinder = new FayeBinder();
 		
 		// Create the Faye client and listener
-		faye = new FayeClient(FAYE_HOST + ":" + FAYE_PORT, AUTH_TOKEN,
-				INITIAL_CHANNEL);
 		fayeListener = new FayeListener();
 		faye.setFayeListener(fayeListener);
 	}
@@ -86,20 +84,16 @@ public class FayeService extends IntentService {
 	 * Starts the Faye client
 	 */
 	public void startFaye() {
-		faye.openSocketConnection();
-		faye.connectFaye();
 		Toast.makeText(getApplicationContext(), "Faye Started",
 				Toast.LENGTH_SHORT).show();
+		// TODO start Faye
 	}
 
 	/**
 	 * Stops the Faye client
 	 */
 	public void stopFaye() {
-		if (faye.isSocketConnected()) {
-			faye.disconnectFaye();
-			faye.closeSocketConnection();
-		}
+		// TODO stop Faye
 	}
 
 	/**
