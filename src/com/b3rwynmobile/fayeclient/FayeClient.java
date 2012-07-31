@@ -2,6 +2,7 @@ package com.b3rwynmobile.fayeclient;
 
 import android.util.Log;
 
+import com.b3rwynmobile.fayeclient.models.FayeMessage;
 import com.google.gson.Gson;
 
 import de.tavendo.autobahn.WebSocketConnection;
@@ -34,6 +35,8 @@ public class FayeClient extends WebSocketHandler {
 	private static final String	HANDSHAKE_STRING		= "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\"{0}\"}";
 	private static final String	FAYE_CONNECT_STRING		= "{\"channel\":\"{0}\",\"clientID\":\"{1}\",\"connectionType\":\"websocket\"";
 	private static final String	FAYE_DISCONNECT_STRING	= "{\"channel\":\"{0}\",\"clientID\":\"{1}\"";
+	private static final String	FAYE_SUBSCRIBE_STRING	= "{\"clientId\":\"{0}\",\"subscription\":\"{1}\",\"channel\":\"/meta/subscribe\",\"ext\":{\"authToken\":\"{2}\"}}";
+	private static final String	FAYE_UNSUBSCRIBE_STRING	= "{\"clientId\":\"{0}\",\"subscription\":\"{1}\",\"channel\":\"/meta/unsubscribe\"}";
 
 	// Data objects
 	private WebSocketConnection	webSocket;
@@ -142,6 +145,15 @@ public class FayeClient extends WebSocketHandler {
 		openSocketConnection();
 	}
 
+	/**
+	 * Disconnects Faye and the socket gracefully
+	 */
+	public void disconnect() {
+		disconnectExpected = true;
+		closeFayeConnection();
+		closeSocketConnection();
+	}
+
 	private void openSocketConnection() {
 		webSocket = new WebSocketConnection();
 		try {
@@ -221,14 +233,16 @@ public class FayeClient extends WebSocketHandler {
 
 		if (channel.equals(HANDSHAKE_CHANNEL)) {
 			if (message.isSuccessful()) {
-
+				clientId = message.getClientId();
+			} else {
+				Log.e(TAG, "Faye failed to handshake");
 			}
 		} else if (channel.equals(CONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
 				fayeConnected = true;
 			} else {
 				fayeConnected = false;
-				Log.d(TAG, "Faye failed to connect");
+				Log.e(TAG, "Faye failed to connect");
 			}
 		} else if (channel.equals(DISCONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
@@ -236,7 +250,7 @@ public class FayeClient extends WebSocketHandler {
 				closeSocketConnection();
 			} else {
 				fayeConnected = true;
-				Log.d(TAG, "Faye failed to disconnect");
+				Log.e(TAG, "Faye failed to disconnect");
 			}
 		} else if (channel.equals(SUBSCRIBE_CHANNEL)) {
 			if (message.isSuccessful()) {
@@ -257,7 +271,9 @@ public class FayeClient extends WebSocketHandler {
 		} else if (activeSubchannels.contains(channel)) {
 			// TODO handle a message from a channel
 		} else {
-			Log.e(TAG, "Faye recieved a message with no subscription for channel " + message.getSubscription());
+			Log.e(TAG,
+					"Faye recieved a message with no subscription for channel "
+							+ message.getSubscription());
 		}
 	}
 

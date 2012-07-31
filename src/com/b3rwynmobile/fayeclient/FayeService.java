@@ -6,6 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import java.text.MessageFormat;
+
 /**
  * Service class to run Faye. Provides a singleton method to get the running
  * instance.
@@ -39,22 +41,21 @@ public class FayeService extends IntentService {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
+
 		// Debug toast
 		Toast.makeText(getApplicationContext(), "Faye Service created",
 				Toast.LENGTH_SHORT).show();
-		
+
+		// Create the client
+		faye = new FayeClient(MessageFormat.format("{0}:{1}", FAYE_HOST,
+				FAYE_PORT));
+
 		// Create the binder
-		fayeBinder = new FayeBinder();
-		
-		// Create the Faye client and listener
+		fayeBinder = new FayeBinder(this, faye);
+
+		// Create the Faye listener
 		fayeListener = new FayeListener();
 		faye.setFayeListener(fayeListener);
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		return super.onStartCommand(intent, flags, startId);
 	}
 
 	/**
@@ -63,12 +64,8 @@ public class FayeService extends IntentService {
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
+		startFaye();
 		return fayeBinder;
-	}
-
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -86,31 +83,19 @@ public class FayeService extends IntentService {
 	public void startFaye() {
 		Toast.makeText(getApplicationContext(), "Faye Started",
 				Toast.LENGTH_SHORT).show();
-		// TODO start Faye
+		faye.connect();
 	}
 
 	/**
 	 * Stops the Faye client
 	 */
 	public void stopFaye() {
-		// TODO stop Faye
+		faye.disconnect();
 	}
 
-	/**
-	 * Binder class to interact with the service
-	 * 
-	 * @author Jamison Greeley (atomicrat2552@gmail.com)
-	 */
-	public class FayeBinder extends Binder {
-
-		/**
-		 * Public method to get the FayeClient the service is maintaining
-		 * 
-		 * @return The FayeClient hosted by the service
-		 */
-		public FayeClient getFayeClient() {
-			return FayeService.this.faye;
-		}
+	@Override
+	protected void onHandleIntent(Intent arg0) {
+		// TODO Auto-generated method stub
 	}
 
 }
