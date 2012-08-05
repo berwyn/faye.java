@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>FayeClientTests</name>
+	<name>Faye Client Tests</name>
 	<comment></comment>
 	<projects>
-		<project>FayeClient</project>
+		<project>Faye Client Demo</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
