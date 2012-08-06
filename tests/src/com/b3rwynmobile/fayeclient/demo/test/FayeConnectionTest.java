@@ -12,37 +12,16 @@ import junit.framework.Assert;
 
 import java.text.MessageFormat;
 
-public class FayeConnectivityTests extends ServiceTestCase<FayeService> {
+public class FayeConnectionTest extends ServiceTestCase<FayeService> {
 
-	private static final String	TAG	= "Faye Connectivity Test";
+	private static String	TAG	= "Faye Connection Test";
 
-	public FayeConnectivityTests() {
+	public FayeConnectionTest() {
 		super(FayeService.class);
 	}
 
-	public FayeConnectivityTests(Class<FayeService> serviceClass) {
+	public FayeConnectionTest(Class<FayeService> serviceClass) {
 		super(serviceClass);
-	}
-	
-	public void setUp() {
-		FayeService service = getService();
-		if(service != null) {
-			service.stopFaye();
-			service.stopSelf();
-		}
-	}
-
-	public void testBinder() {
-		// Arrange
-		FayeBinder binder;
-
-		// Act
-		binder = (FayeBinder) bindService(new Intent(getContext(),
-				FayeService.class));
-
-		// Assert
-		Assert.assertNotNull(binder);
-		Assert.assertNotNull(binder.getFayeClient());
 	}
 
 	public void testConnect() {
@@ -53,8 +32,7 @@ public class FayeConnectivityTests extends ServiceTestCase<FayeService> {
 
 		// Act
 		client.connect();
-		while (!(client.isFayeConnected() && binder.getFayeClient()
-				.isSocketConnected())) {
+		while (!(client.isFayeConnected() && client.isSocketConnected())) {
 			try {
 				Log.d(TAG,
 						MessageFormat
@@ -74,18 +52,13 @@ public class FayeConnectivityTests extends ServiceTestCase<FayeService> {
 		Assert.assertTrue(client.isFayeConnected());
 		Assert.assertNotNull(client.getClientId());
 	}
-
-	public void testDisconnect() {
-		// Arrange
-		FayeBinder binder = (FayeBinder) bindService(new Intent(getContext(),
-				FayeService.class));
-
-		// Act
-		binder.getFayeClient().connect();
-		binder.getFayeClient().disconnect();
-
-		// Assert
-		Assert.assertNull(binder.getFayeClient().getClientId());
+	
+	@Override
+	protected void tearDown() throws Exception {
+		getService().stopFaye();
+		getService().stopSelf();
+		
+		super.tearDown();
 	}
 
 }

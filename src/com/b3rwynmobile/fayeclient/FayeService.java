@@ -1,3 +1,4 @@
+// @formatter:off
 /******************************************************************************
  *
  *  Copyright 2011-2012 b3rwyn Mobile Solutions
@@ -15,12 +16,14 @@
  *  limitations under the License.
  *
  ******************************************************************************/
+// @formatter:on
 
 package com.b3rwynmobile.fayeclient;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -29,17 +32,16 @@ import android.widget.Toast;
  * 
  * @author Jamison Greeley (atomicrat2552@gmail.com)
  */
-public class FayeService extends IntentService {
+public class FayeService extends Service {
 
 	// Debug tag
-	@SuppressWarnings("unused")
-	private final String		TAG				= "FayeService";
+	private final String		TAG				= "Faye Service";
 
 	// String constants
-	final private static String	FAYE_HOST		= "HOST_ADDRESS";
-	final private static String	FAYE_PORT		= "HOST_PORT";
-	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
-	final private static String	INITIAL_CHANNEL	= "/notifications";
+	final private static String	FAYE_HOST		= "ws://myhost.com";
+	final private static String	FAYE_PORT		= "80";
+	final private static String	INITIAL_CHANNEL	= "/push";
+	final private static String	AUTH_TOKEN		= "SUPER SECRET TOKEN";
 
 	// Data objects
 	private FayeClient			faye;
@@ -50,13 +52,7 @@ public class FayeService extends IntentService {
 	 * Default constructor
 	 */
 	public FayeService() {
-		super("FayeService");
-	}
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		setup();
+		super();
 	}
 
 	/**
@@ -66,7 +62,13 @@ public class FayeService extends IntentService {
 	@Override
 	public IBinder onBind(Intent intent) {
 		setup();
-		return fayeBinder;
+		return this.fayeBinder;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		setup();
 	}
 
 	/**
@@ -78,41 +80,38 @@ public class FayeService extends IntentService {
 		super.onDestroy();
 	}
 
+	private void setup() {
+		// Debug toast
+		Toast.makeText(getApplicationContext(), "Faye Service created",
+				Toast.LENGTH_SHORT).show();
+		String fayeUrl = FayeService.FAYE_HOST + ":" + FayeService.FAYE_PORT
+				+ FayeService.INITIAL_CHANNEL;
+
+		// Create the client
+		this.faye = new FayeClient(fayeUrl);
+
+		// Create the binder
+		this.fayeBinder = new FayeBinder(this, this.faye);
+
+		// Create the Faye listener
+		this.fayeListener = new FayeListener();
+		this.faye.setFayeListener(this.fayeListener);
+	}
+
 	/**
 	 * Starts the Faye client
 	 */
 	public void startFaye() {
 		Toast.makeText(getApplicationContext(), "Faye Started",
 				Toast.LENGTH_SHORT).show();
-		faye.connect();
+		this.faye.connect();
 	}
 
 	/**
 	 * Stops the Faye client
 	 */
 	public void stopFaye() {
-		faye.disconnect();
-	}
-
-	@Override
-	protected void onHandleIntent(Intent arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	private void setup() {
-		// Debug toast
-		Toast.makeText(getApplicationContext(), "Faye Service created",
-				Toast.LENGTH_SHORT).show();
-
-		// Create the client
-		faye = new FayeClient(FAYE_HOST + ":" + FAYE_PORT);
-
-		// Create the binder
-		fayeBinder = new FayeBinder(this, faye);
-
-		// Create the Faye listener
-		fayeListener = new FayeListener();
-		faye.setFayeListener(fayeListener);
+		this.faye.disconnect();
 	}
 
 }

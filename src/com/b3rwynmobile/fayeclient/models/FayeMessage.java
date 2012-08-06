@@ -1,5 +1,7 @@
 package com.b3rwynmobile.fayeclient.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class FayeMessage {
 
 	// General
@@ -19,6 +21,7 @@ public class FayeMessage {
 
 	// Handshake + Subscribe
 	private boolean		successful;
+	@SerializedName("clientId")
 	private String		clientId;
 
 	public String getChannel() {
