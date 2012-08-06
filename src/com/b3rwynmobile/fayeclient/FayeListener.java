@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 package com.b3rwynmobile.fayeclient;
 
 =======
+=======
+// @formatter:off
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 /******************************************************************************
  *
  *  Copyright 2011-2012 b3rwyn Mobile Solutions
@@ -19,6 +23,7 @@ package com.b3rwynmobile.fayeclient;
  *  limitations under the License.
  *
  ******************************************************************************/
+// @formatter:on
 
 package com.b3rwynmobile.fayeclient;
 
@@ -28,19 +33,22 @@ import com.b3rwynmobile.fayeclient.models.FayeMessage;
 public class FayeListener {
 
 	/**
-	 * Method used to take action when the client receives a message
+	 * Method to handle logic when the client connects to the server
 	 * 
 	 * @param faye
-	 *            The client receiving the message
-	 * @param msg
-	 *            The message the client received
+	 *            The client that's established a connection
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	public void messageReceived(FayeClient faye, String msg) {
 =======
 	public void messageReceived(FayeClient faye, FayeMessage msg) {
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 		// TODO handle message
+=======
+	public void connectedToServer(FayeClient faye) {
+		// TODO What to do when the connection is successful
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 	}
 
 	/**
@@ -74,13 +82,15 @@ public class FayeListener {
 	}
 
 	/**
-	 * Method to handle logic when the client connects to the server
+	 * Method used to take action when the client receives a message
 	 * 
 	 * @param faye
-	 *            The client that's established a connection
+	 *            The client receiving the message
+	 * @param msg
+	 *            The message the client received
 	 */
-	public void connectedToServer(FayeClient faye) {
-		// TODO What to do when the connection is successful
+	public void messageReceived(FayeClient faye, FayeMessage msg) {
+		// TODO handle message
 	}
 
 }

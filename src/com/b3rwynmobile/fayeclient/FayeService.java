@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+// @formatter:off
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 /******************************************************************************
  *
  *  Copyright 2011-2012 b3rwyn Mobile Solutions
@@ -17,17 +21,19 @@
  *  limitations under the License.
  *
  ******************************************************************************/
+// @formatter:on
 
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 package com.b3rwynmobile.fayeclient;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
 <<<<<<< HEAD
 import android.os.Binder;
 =======
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -36,13 +42,13 @@ import android.widget.Toast;
  * 
  * @author Jamison Greeley (atomicrat2552@gmail.com)
  */
-public class FayeService extends IntentService {
+public class FayeService extends Service {
 
 	// Debug tag
-	@SuppressWarnings("unused")
-	private final String		TAG				= "FayeService";
+	private final String		TAG				= "Faye Service";
 
 	// String constants
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	final private static String	FAYE_HOST		= "ws://push01.cloudsdale.org";
@@ -59,6 +65,12 @@ public class FayeService extends IntentService {
 	final private static String	AUTH_TOKEN		= "SECRET_TOKEN";
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 	final private static String	INITIAL_CHANNEL	= "/notifications";
+=======
+	final private static String	FAYE_HOST		= "ws://myhost.com";
+	final private static String	FAYE_PORT		= "80";
+	final private static String	INITIAL_CHANNEL	= "/push";
+	final private static String	AUTH_TOKEN		= "SUPER SECRET TOKEN";
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 
 	// Data objects
 	private FayeClient			faye;
@@ -69,6 +81,7 @@ public class FayeService extends IntentService {
 	 * Default constructor
 	 */
 	public FayeService() {
+<<<<<<< HEAD
 		super("FayeService");
 	}
 
@@ -100,6 +113,9 @@ public class FayeService extends IntentService {
 =======
 		setup();
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
+=======
+		super();
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 	}
 
 	/**
@@ -119,7 +135,13 @@ public class FayeService extends IntentService {
 
 =======
 		setup();
-		return fayeBinder;
+		return this.fayeBinder;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		setup();
 	}
 
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
@@ -130,6 +152,24 @@ public class FayeService extends IntentService {
 	public void onDestroy() {
 		stopFaye();
 		super.onDestroy();
+	}
+
+	private void setup() {
+		// Debug toast
+		Toast.makeText(getApplicationContext(), "Faye Service created",
+				Toast.LENGTH_SHORT).show();
+		String fayeUrl = FayeService.FAYE_HOST + ":" + FayeService.FAYE_PORT
+				+ FayeService.INITIAL_CHANNEL;
+
+		// Create the client
+		this.faye = new FayeClient(fayeUrl);
+
+		// Create the binder
+		this.fayeBinder = new FayeBinder(this, this.faye);
+
+		// Create the Faye listener
+		this.fayeListener = new FayeListener();
+		this.faye.setFayeListener(this.fayeListener);
 	}
 
 	/**
@@ -150,14 +190,19 @@ public class FayeService extends IntentService {
 =======
 		Toast.makeText(getApplicationContext(), "Faye Started",
 				Toast.LENGTH_SHORT).show();
+<<<<<<< HEAD
 		faye.connect();
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
+=======
+		this.faye.connect();
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 	}
 
 	/**
 	 * Stops the Faye client
 	 */
 	public void stopFaye() {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		if (faye.isSocketConnected()) {
@@ -208,6 +253,9 @@ public class FayeService extends IntentService {
 		fayeListener = new FayeListener();
 		faye.setFayeListener(fayeListener);
 >>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
+=======
+		this.faye.disconnect();
+>>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 	}
 
 }
