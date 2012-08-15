@@ -28,7 +28,9 @@ import com.google.gson.Gson;
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 import de.tavendo.autobahn.WebSocketHandler;
+import de.tavendo.autobahn.WebSocketOptions;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -203,18 +205,22 @@ public class FayeClient {
 		String connectString = "{\"channel\":\"" + FayeClient.CONNECT_CHANNEL
 				+ "\",\"clientId\":\"" + this.clientId
 				+ "\",\"connectionType\":\"websocket\"}";
-		Log.d(FayeClient.TAG, "Connect: " + connectString);
-		this.webSocket.sendTextMessage(connectString);
+		try {
+			webSocket.sendBinaryMessage(connectString.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void openSocketConnection() {
+		WebSocketOptions options = new WebSocketOptions();
+		options.setReceiveTextMessagesRaw(true);
 		this.webSocket = new WebSocketConnection();
 		try {
 			this.webSocket.connect(this.fayeUrl, new WebSocketHandler() {
 
 				public void onBinaryMessage(byte[] payload) {
-					throw new UnsupportedOperationException(
-							"This type of payload isn't supported yet");
+					onTextMessage(new String(payload));
 				}
 
 				public void onClose(int code, String reason) {
@@ -222,10 +228,14 @@ public class FayeClient {
 				}
 
 				public void onOpen() {
-					Log.d(FayeClient.TAG, "Socket opened");
-					webSocket
-							.sendTextMessage("{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\""
-									+ FayeClient.HANDSHAKE_CHANNEL + "\"}");
+					String handshakeString = "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\""
+							+ FayeClient.HANDSHAKE_CHANNEL + "\"}";
+					try {
+						webSocket.sendBinaryMessage(handshakeString
+								.getBytes("UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
 				}
 
 				public void onRawTextMessage(byte[] payload) {
@@ -242,7 +252,7 @@ public class FayeClient {
 						processTextMessage(message, channel);
 					}
 				}
-			});
+			}, options);
 			Log.d(FayeClient.TAG, "Service is opening the web socket");
 		} catch (WebSocketException e) {
 			e.printStackTrace();
@@ -252,26 +262,27 @@ public class FayeClient {
 	private void processTextMessage(FayeMessage message, String channel) {
 		if (channel.equals(FayeClient.HANDSHAKE_CHANNEL)) {
 			if (message.isSuccessful()) {
-				this.clientId = message.getClientId();
+				clientId = message.getClientId();
 				openFayeConnection();
 			} else {
 				Log.e(FayeClient.TAG, "Faye failed to handshake");
 			}
 		} else if (channel.equals(FayeClient.CONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
-				this.fayeConnected = true;
-				this.fayeListener.connectedToServer(this);
+				fayeConnected = true;
+				fayeListener.connectedToServer(this);
+				Log.d(TAG, "Faye connected");
 			} else {
-				this.fayeConnected = false;
+				fayeConnected = false;
 				Log.e(FayeClient.TAG, "Faye failed to connect");
 			}
 		} else if (channel.equals(FayeClient.DISCONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
-				this.fayeConnected = false;
-				this.fayeListener.disconnectedFromServer(this);
+				fayeConnected = false;
+				fayeListener.disconnectedFromServer(this);
 				closeSocketConnection();
 			} else {
-				this.fayeConnected = true;
+				fayeConnected = true;
 				Log.e(FayeClient.TAG, "Faye failed to disconnect");
 			}
 		} else if (channel.equals(FayeClient.SUBSCRIBE_CHANNEL)) {
@@ -279,7 +290,7 @@ public class FayeClient {
 				Log.i(FayeClient.TAG,
 						"Faye subscribed to channel"
 								+ message.getSubscription());
-				this.activeSubchannels.add(message.getSubscription());
+				activeSubchannels.add(message.getSubscription());
 			} else {
 				Log.e(FayeClient.TAG, MessageFormat.format(
 						"Faye failed to connect to channel {0} with error {1}",
@@ -291,7 +302,7 @@ public class FayeClient {
 					"Faye unsubscribed from channel "
 							+ message.getSubscription());
 		} else if (this.activeSubchannels.contains(channel)) {
-			this.fayeListener.messageReceived(this, message);
+			fayeListener.messageReceived(this, message);
 		} else {
 			Log.e(FayeClient.TAG,
 					"Faye recieved a message with no subscription for channel "
@@ -305,9 +316,9 @@ public class FayeClient {
 				FayeClient.this.webSocket = new WebSocketConnection();
 				connect();
 				break;
+			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
 			case WebSocketHandler.CLOSE_CANNOT_CONNECT:
 			case WebSocketHandler.CLOSE_CONNECTION_LOST:
-			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
 				while (!FayeClient.this.webSocket.isConnected()) {
 					try {
 						connect();
@@ -346,7 +357,11 @@ public class FayeClient {
 				+ this.authToken + "\"}}";
 		Log.d(FayeClient.TAG, "Faye is attempting to subscribe to channel \""
 				+ channel + "\"");
-		this.webSocket.sendTextMessage(subscribe);
+		try {
+			this.webSocket.sendBinaryMessage(subscribe.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -362,6 +377,10 @@ public class FayeClient {
 		Log.d(FayeClient.TAG,
 				"Faye is attempting to unsubscribe from channel \"" + channel
 						+ "\"");
-		this.webSocket.sendTextMessage(unsubscribe);
+		try {
+			this.webSocket.sendBinaryMessage(unsubscribe.getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -23,7 +23,6 @@ package com.b3rwynmobile.fayeclient;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -35,17 +34,18 @@ import android.widget.Toast;
 public class FayeService extends Service {
 
 	// Debug tag
+	@SuppressWarnings("unused")
 	private final String		TAG				= "Faye Service";
 
 	// String constants
-	final private static String	FAYE_HOST		= "ws://myhost.com";
+	final private static String	FAYE_HOST		= "ws://push01.cloudsdale.org";
 	final private static String	FAYE_PORT		= "80";
 	final private static String	INITIAL_CHANNEL	= "/push";
+	@SuppressWarnings("unused")
 	final private static String	AUTH_TOKEN		= "SUPER SECRET TOKEN";
 
 	// Data objects
 	private FayeClient			faye;
-	private FayeListener		fayeListener;
 	private FayeBinder			fayeBinder;
 
 	/**
@@ -92,10 +92,6 @@ public class FayeService extends Service {
 
 		// Create the binder
 		this.fayeBinder = new FayeBinder(this, this.faye);
-
-		// Create the Faye listener
-		this.fayeListener = new FayeListener();
-		this.faye.setFayeListener(this.fayeListener);
 	}
 
 	/**

@@ -22,7 +22,7 @@ package com.b3rwynmobile.fayeclient;
 
 import com.b3rwynmobile.fayeclient.models.FayeMessage;
 
-public class FayeListener {
+public interface FayeListener {
 
 	/**
 	 * Method to handle logic when the client connects to the server
@@ -30,9 +30,7 @@ public class FayeListener {
 	 * @param faye
 	 *            The client that's established a connection
 	 */
-	public void connectedToServer(FayeClient faye) {
-		// TODO What to do when the connection is successful
-	}
+	public void connectedToServer(FayeClient faye);
 
 	/**
 	 * Method to handle client getting disconnected from the server prematurely
@@ -40,14 +38,7 @@ public class FayeListener {
 	 * @param faye
 	 *            The client that's been disconnected
 	 */
-	public void disconnectedFromServer(FayeClient faye) {
-		if (!faye.isDisconnectExpected()) {
-			// If the disconnect isn't expected
-			// TODO reconnect Faye
-		} else {
-			// TODO logic for when connection is manually closed
-		}
-	}
+	public void disconnectedFromServer(FayeClient faye);
 
 	/**
 	 * Method used to take action when the client receives a message
@@ -57,8 +48,6 @@ public class FayeListener {
 	 * @param msg
 	 *            The message the client received
 	 */
-	public void messageReceived(FayeClient faye, FayeMessage msg) {
-		// TODO handle message
-	}
+	public void messageReceived(FayeClient faye, FayeMessage msg);
 
 }
