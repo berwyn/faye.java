@@ -1,31 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-package com.b3rwynmobile.fayeclient;
-
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-
-import android.util.Log;
-
-import com.b3rwynmobile.fayeclient.autobahn.WebSocket;
-import com.b3rwynmobile.fayeclient.autobahn.WebSocketConnection;
-import com.b3rwynmobile.fayeclient.autobahn.WebSocketConnectionHandler;
-import com.b3rwynmobile.fayeclient.autobahn.WebSocketException;
-import com.google.gson.Gson;
-
-=======
-import android.util.Log;
-
-import com.google.gson.Gson;
-
-import de.tavendo.autobahn.WebSocketConnection;
-import de.tavendo.autobahn.WebSocketException;
-import de.tavendo.autobahn.WebSocketHandler;
-=======
-=======
 // @formatter:off
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 /******************************************************************************
  *
  *  Copyright 2011-2012 b3rwyn Mobile Solutions
@@ -54,173 +27,64 @@ import com.google.gson.Gson;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
-<<<<<<< HEAD
-import de.tavendo.autobahn.WebSocketOptions;
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
 import de.tavendo.autobahn.WebSocketHandler;
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
+import de.tavendo.autobahn.WebSocketOptions;
 
+import java.io.UnsupportedEncodingException;
+<<<<<<< HEAD
+import java.lang.Thread.State;
+=======
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 /**
  * This class handles interactions with the Faye server, such as connecting,
  * (un-)subscribing to channels and receiving push messages
  * 
  * @author Jamison Greeley (atomicrat552@gmail.com)
  */
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 public class FayeClient {
-=======
-public class FayeClient extends WebSocketHandler {
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
-public class FayeClient extends WebSocketConnectionHandler {
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
-public class FayeClient {
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 
 	// Debug tag
-	private static final String	TAG					= "Faye Client";
+	protected static final String TAG = "Faye Client";
 
 	// Channel constants
-<<<<<<< HEAD
-	private static final String	HANDSHAKE_CHANNEL		= "/meta/handshake";
-	private static final String	CONNECT_CHANNEL			= "/meta/connect";
-	private static final String	DISCONNECT_CHANNEL		= "/meta/disconnect";
-	private static final String	SUBSCRIBE_CHANNEL		= "/meta/subscribe";
-	private static final String	UNSUBSCRIBE_CHANNEL		= "/meta/unsubscribe";
+	protected static final String HANDSHAKE_CHANNEL = "/meta/handshake";
+	protected static final String CONNECT_CHANNEL = "/meta/connect";
+	protected static final String DISCONNECT_CHANNEL = "/meta/disconnect";
+	protected static final String SUBSCRIBE_CHANNEL = "/meta/subscribe";
+	protected static final String UNSUBSCRIBE_CHANNEL = "/meta/unsubscribe";
 
-	// String constants
-<<<<<<< HEAD
-<<<<<<< HEAD
-	private static final String	HANDSHAKE_STRING		= "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\"/meta/handshake\"}";
-	private static final String	SUBSCRIBE_STRING		= "{\"clientId\":\"%s\",\"subscription\":\"%s\",\"channel\":\"/meta/subscribe\", \"ext\":{\"authToken\":\"%s\"}   }";
-	private static final String	UNSUBSCRIBE_STRING		= "{\"clientId\":\"%s\",\"subscription\":\"%s\",\"channel\":\"/meta/unsubscribe\"}";
-	private static final String	FAYE_CONNECT_STRING		= "{\"clientId\":\"%s\",\"connectionType\":\"websocket\",\"channel\":\"/meta/connect\"}";
-	private static final String	FAYE_DISCONNECT_STRING	= "{\"clientId\":\"%s\",\"connectionType\":\"websocket\",\"channel\":\"/meta/disconnect\"}";
+	// Debug flag
+	protected static final boolean DEBUG = true;
 
 	// Data objects
-	private WebSocket			webSocket;
-	private FayeListener		fayeListener;
-	private FayeHandler			fayeHandler;
-=======
-	private static final String	HANDSHAKE_STRING		= "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\"{0}\"}";
-	private static final String	FAYE_CONNECT_STRING		= "{\"channel\":\"{0}\",\"clientID\":\"{1}\",\"connectionType\":\"websocket\"";
-	private static final String	FAYE_DISCONNECT_STRING	= "{\"channel\":\"{0}\",\"clientID\":\"{1}\"";
-=======
-	private static final String	FAYE_SUBSCRIBE_STRING	= "{\"clientId\":\"{0}\",\"subscription\":\"{1}\",\"channel\":\"/meta/subscribe\",\"ext\":{\"authToken\":\"{2}\"}}";
-	private static final String	FAYE_UNSUBSCRIBE_STRING	= "{\"clientId\":\"{0}\",\"subscription\":\"{1}\",\"channel\":\"/meta/unsubscribe\"}";
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
-	private static final String	HANDSHAKE_CHANNEL	= "/meta/handshake";
-	private static final String	CONNECT_CHANNEL		= "/meta/connect";
-	private static final String	DISCONNECT_CHANNEL	= "/meta/disconnect";
-	private static final String	SUBSCRIBE_CHANNEL	= "/meta/subscribe";
-	private static final String	UNSUBSCRIBE_CHANNEL	= "/meta/unsubscribe";
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
-
-	// Data objects
-	private WebSocketConnection	webSocket;
-	private FayeListener		fayeListener;
-<<<<<<< HEAD
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
+	protected WebSocketConnection mWebSocket;
+	protected FayeListener mFayeListener;
+	protected FayeHeartbeatThread mHeartbeatThread;
 
 	// Connection fields
-	private String				fayeUrl;
-	private String				authToken;
-	private List<String>		activeSubchannels;
-<<<<<<< HEAD
-	private String				fayeClientId;
-<<<<<<< HEAD
-=======
-	private String				clientId;
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
+	protected String mFayeUrl;
+	protected String mAuthToken;
+	protected List<String> mActiveSubchannels;
+	protected String mClientId;
 
 	// Status fields
-	private boolean				socketConnected;
-=======
-	private String				clientId;
-
-	// Status fields
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-	private boolean				fayeConnected;
-	private boolean				disconnectExpected;
+	protected boolean mFayeConnected;
+	protected boolean mDisconnectExpected;
 
 	/**
 	 * Simplified constructor
 	 * 
 	 * @param fayeUrl
 	 *            Url of the Faye server
-	 * @param authToken
+	 * @param mAuthToken
 	 *            Token for Faye authentication
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-import android.util.Log;
-
-public class FayeClient {
-
-	// Debug tag
-	private static final String	TAG						= "FayeClient";
-
-	// Channel constants
-	private static final String	HANDSHAKE_CHANNEL		= "/meta/handshake";
-	private static final String	CONNECT_CHANNEL			= "/meta/connect";
-	private static final String	DISCONNECT_CHANNEL		= "/meta/disconnect";
-	private static final String	SUBSCRIBE_CHANNEL		= "/meta/subscribe";
-	private static final String	UNSUBSCRIBE_CHANNEL		= "/meta/unsubscribe";
-
-	// String constants
-	private static final String	HANDSHAKE_STRING		= "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\"/meta/handshake\"}";
-	private static final String	SUBSCRIBE_STRING		= "{\"clientId\":\"%s\",\"subscription\":\"%s\",\"channel\":\"/meta/subscribe\", \"ext\":{\"authToken\":\"%s\"}   }";
-	private static final String	UNSUBSCRIBE_STRING		= "{\"clientId\":\"%s\",\"subscription\":\"%s\",\"channel\":\"/meta/unsubscribe\"}";
-	private static final String	FAYE_CONNECT_STRING		= "{\"clientId\":\"%s\",\"connectionType\":\"websocket\",\"channel\":\"/meta/connect\"}";
-	private static final String	FAYE_DISCONNECT_STRING	= "{\"clientId\":\"%s\",\"connectionType\":\"websocket\",\"channel\":\"/meta/disconnect\"}";
-
-	// Data objects
-
-	// Connection fields
-	private String				fayeUrl;
-	private String				authToken;
-	private List<String>		activeSubchannels;
-	private String				fayeClientId;
-
-	// Status fields
-	private boolean				socketConnected;
-	private boolean				fayeConnected;
-
-	/**
-	 * Simplified constructor
-	 * @param fayeUrl
-	 *            Url of the Faye server
-	 * @param authToken
-	 *            Token for Faye authentication
-	 */
-	public FayeClient(String fayeUrl, String authToken) {
-		this(fayeUrl, authToken, "");
-=======
 	 */
 	public FayeClient(String fayeUrl) {
 		this(fayeUrl, "");
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
-	 */
-	public FayeClient(String fayeUrl) {
-		this(fayeUrl, "");
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 	}
 
 	/**
@@ -228,74 +92,11 @@ public class FayeClient {
 	 * 
 	 * @param fayeUrl
 	 *            Url of they Faye server
-	 * @param authToken
+	 * @param mAuthToken
 	 *            Token for Faye authentication
 	 * @param channel
 	 *            Channel to subscribe to after handshake
 	 */
-<<<<<<< HEAD
-<<<<<<< HEAD
-	 */
-	public FayeClient(String fayeUrl, String authToken, String channel) {
-		this.fayeHandler = new FayeHandler();
-		this.fayeUrl = fayeUrl;
-		this.authToken = authToken;
-		this.activeSubchannels = new ArrayList<String>();
-		this.activeSubchannels.add(channel);
-		this.socketConnected = false;
-		this.fayeConnected = false;
-		this.disconnectExpected = false;
-	}
-
-	/**
-	 * Gets the FayeListener attached to the client
-	 * 
-	 * @return The FayeListener attached to the client
-	 */
-	public FayeListener getFayeListener() {
-		return fayeListener;
-	}
-
-	/**
-	 * Sets the FayeListener attached to the client
-	 * 
-	 * @param mFayeListener
-	 *            The FayeListener to attach to the client
-	 */
-	public void setFayeListener(FayeListener mFayeListener) {
-		this.fayeListener = mFayeListener;
-	}
-
-	/**
-	 * Whether or not the client has a websocket connection to the push server
-	 * 
-	 * @return The status of the websocket connection
-	 */
-	public boolean isSocketConnected() {
-		return socketConnected;
-	}
-
-	/**
-	 * Whether or not the client has a connection to the push server
-	 * 
-	 * @return The status of the push server connection
-	 */
-=======
-	public FayeClient(String fayeUrl, String authToken, String channel) {
-		this.fayeHandler = new FayeHandler();
-		this.fayeUrl = fayeUrl;
-		this.authToken = authToken;
-		this.activeSubchannels = new ArrayList<String>();
-		this.activeSubchannels.add(channel);
-		this.socketConnected = false;
-		this.fayeConnected = false;
-		this.disconnectExpected = false;
-=======
-	public FayeClient(String fayeUrl, String channel) {
-		this.fayeUrl = fayeUrl;
-		this.activeSubchannels = new ArrayList<String>();
-		this.socketConnected = false;
-=======
 	public FayeClient(String fayeUrl, String channel) {
 		this(fayeUrl, channel, "");
 	}
@@ -313,40 +114,39 @@ public class FayeClient {
 	 *            Auth token for authenticated Faye hosts
 	 */
 	public FayeClient(String fayeUrl, String channel, String authToken) {
-		this.fayeUrl = fayeUrl;
-		this.activeSubchannels = new ArrayList<String>();
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-		this.fayeConnected = false;
-		this.disconnectExpected = false;
-		this.authToken = authToken;
+		this.mFayeUrl = fayeUrl;
+		this.mActiveSubchannels = new ArrayList<String>();
+		this.mFayeConnected = false;
+		this.mDisconnectExpected = false;
+		this.mAuthToken = authToken;
 
 		// Add any non-blank channel
 		if (!channel.equals("")) {
-			this.activeSubchannels.add(channel);
+			this.mActiveSubchannels.add(channel);
 		}
-<<<<<<< HEAD
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 	}
 
-	private void closeFayeConnection() {
-		if (this.clientId == null) { return; }
+	protected void closeFayeConnection() {
+		if (this.mClientId == null) {
+			return;
+		}
 
 		String disconnectString = "{\"channel\":\""
 				+ FayeClient.DISCONNECT_CHANNEL + "\",\"clientID\":\""
-				+ this.clientId + "\"}";
-		Log.d(FayeClient.TAG, "Disconnect: " + disconnectString);
-		this.webSocket.sendTextMessage(disconnectString);
-		this.clientId = null;
+				+ this.mClientId + "\"}";
+		if (DEBUG) {
+			Log.d(FayeClient.TAG, "Disconnect: " + disconnectString);
+		}
+		this.mWebSocket.sendTextMessage(disconnectString);
+		this.mClientId = null;
 	}
 
-	private void closeSocketConnection() {
-		if (this.webSocket != null) {
-			if (this.webSocket.isConnected()) {
-				this.webSocket.disconnect();
+	protected void closeSocketConnection() {
+		if (this.mWebSocket != null) {
+			if (this.mWebSocket.isConnected()) {
+				this.mWebSocket.disconnect();
 			}
-			this.webSocket = null;
+			this.mWebSocket = null;
 		}
 	}
 
@@ -355,32 +155,17 @@ public class FayeClient {
 	 * handshake
 	 */
 	public void connect() {
-		this.disconnectExpected = false;
+		this.mDisconnectExpected = false;
 		openSocketConnection();
 	}
 
 	/**
 	 * Disconnects Faye and the socket gracefully
 	 */
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-	public void setFayeListener(FayeListener mFayeListener) {
-		this.fayeListener = mFayeListener;
-=======
-	public void setFayeListener(FayeListener fayeListener) {
-		this.fayeListener = fayeListener;
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
-	public void setFayeListener(FayeListener fayeListener) {
-		this.fayeListener = fayeListener;
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
 	public void disconnect() {
-		this.disconnectExpected = true;
+		this.mDisconnectExpected = true;
 		closeFayeConnection();
 		closeSocketConnection();
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 	}
 
 	/**
@@ -388,17 +173,8 @@ public class FayeClient {
 	 * 
 	 * @return The client's current ID. Null if no connection established.
 	 */
-<<<<<<< HEAD
-	public boolean isSocketConnected() {
-<<<<<<< HEAD
-		return socketConnected;
-=======
-		return webSocket.isConnected();
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
 	public String getClientId() {
-		return this.clientId;
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
+		return this.mClientId;
 	}
 
 	/**
@@ -407,7 +183,7 @@ public class FayeClient {
 	 * @return The FayeListener attached to the client
 	 */
 	public FayeListener getFayeListener() {
-		return this.fayeListener;
+		return this.mFayeListener;
 	}
 
 	/**
@@ -416,135 +192,16 @@ public class FayeClient {
 	 * @return The status of whether disconnect was expected
 	 */
 	public boolean isDisconnectExpected() {
-		return this.disconnectExpected;
+		return this.mDisconnectExpected;
 	}
 
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-	/**
-	 * Opens a websocket connection to the webserver. This must be done before
-	 * connecting the push client
-	 */
-	public void openSocketConnection() {
-		Log.d(TAG, "Faye is attempting to open the socket connection");
-
-		if (webSocket != null) {
-			webSocket.disconnect();
-		}
-
-		// Create the socket
-		webSocket = new WebSocketConnection();
-
-		// Try to connect
-		try {
-			webSocket.connect(fayeUrl, fayeHandler);
-			this.socketConnected = true;
-		} catch (WebSocketException e) {
-			Log.e(TAG, "Faye Websocket error: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		Log.d(TAG, "Faye has opened the socket");
-	}
-
-	/**
-	 * Closes the websocket connection. Do this after you close the push client
-	 * connection
-	 */
-	public void closeSocketConnection() {
-		Log.d(TAG, "Faye is attempting to close the socket connection");
-		if (webSocket != null) {
-			webSocket.disconnect();
-			this.socketConnected = false;
-
-			Log.d(TAG, "Faye has closed the socket connection");
-		}
-	}
-
-	/**
-	 * Connect the push client. The websocket must be open for this to work
-	 */
-	public void connectFaye() {
-		// Connect
-		Log.d(TAG, "Faye is attempting to open a connection to the push server");
-
-		String connect = String.format(FAYE_CONNECT_STRING, fayeClientId);
-		webSocket.sendTextMessage(connect);
-
-		// Socket open, handshake push server
-		handshake();
-
-		// Set the object status
-		this.fayeConnected = true;
-		this.disconnectExpected = false;
-
-		// Alert the listener that socket connection is connected
-		if (FayeClient.this.fayeListener != null
-				&& FayeClient.this.fayeListener instanceof FayeListener) {
-			FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
-		}
-
-		Log.d(TAG, "Faye has opened the push connection");
-	}
-
-	/**
-	 * Disconnect the push client. The websocket will not be closed by this
-	 * action, you must close it manually
-	 */
-	public void disconnectFaye() {
-		Log.d(TAG, "Faye is attempting to close the push connection");
-		String disconnect = String.format(FAYE_DISCONNECT_STRING, fayeClientId);
-		webSocket.sendTextMessage(disconnect);
-		this.fayeConnected = false;
-		this.disconnectExpected = true;
-
-		Log.d(TAG, "Faye has closed the push connection");
-	}
-
-	/**
-	 * Handshakes the push client and server
-	 */
-	public void handshake() {
-		webSocket.sendTextMessage(HANDSHAKE_STRING);
-=======
-=======
-	 * Gets the client's current ID provided by the Faye server
-	 * 
-	 * @return The client's current ID. Null if no connection established.
-	 */
-	public String getClientId() {
-		return clientId;
-	}
-
-	/**
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-	 * Disconnects the socket if needed, build and connect the socket, then
-	 * handshake
-	 */
-	public void connect() {
-		disconnectExpected = false;
-<<<<<<< HEAD
-		closeSocketConnection();
-		openSocketConnection();
-	}
-
-	private void openSocketConnection() {
-		webSocket = new WebSocketConnection();
-		try {
-			webSocket.connect(fayeUrl, this);
-			socketConnected = true;
-=======
-		openSocketConnection();
-=======
 	 * Whether or not the client has a connection to the push server
 	 * 
 	 * @return The status of the push server connection
 	 */
 	public boolean isFayeConnected() {
-		return this.fayeConnected;
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
+		return this.mFayeConnected;
 	}
 
 	/**
@@ -552,601 +209,41 @@ public class FayeClient {
 	 * 
 	 * @return The status of the websocket connection
 	 */
-<<<<<<< HEAD
-	public void disconnect() {
-		disconnectExpected = true;
-		closeFayeConnection();
-		closeSocketConnection();
+	public boolean isSocketConnected() {
+		return this.mWebSocket.isConnected();
 	}
 
+	protected void openFayeConnection() {
+		String connectString = "{\"channel\":\"" + FayeClient.CONNECT_CHANNEL
+				+ "\",\"clientId\":\"" + this.mClientId
+				+ "\",\"connectionType\":\"websocket\"}";
+		try {
+<<<<<<< HEAD
+			mWebSocket.sendBinaryMessage(connectString.getBytes("UTF-8"));
+=======
+			webSocket.sendBinaryMessage(connectString.getBytes("UTF-8"));
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+<<<<<<< HEAD
+	protected void openSocketConnection() {
+		WebSocketOptions options = new WebSocketOptions();
+		options.setReceiveTextMessagesRaw(true);
+		this.mWebSocket = new WebSocketConnection();
+=======
 	private void openSocketConnection() {
 		WebSocketOptions options = new WebSocketOptions();
-		options.setReceiveTextMessagesRaw(false);
-		options.setSocketConnectTimeout(30000);
-		webSocket = new WebSocketConnection();
-		try {
-			webSocket.connect(fayeUrl, this, options);
-			Log.d(TAG, "Service is opening the web socket");
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-		} catch (WebSocketException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void closeSocketConnection() {
-		if (webSocket != null) {
-<<<<<<< HEAD
-			webSocket.disconnect();
-			webSocket = null;
-			socketConnected = false;
-		}
-	}
-
-	private void openFayeConnection() {
-		webSocket.sendTextMessage(MessageFormat.format(FAYE_CONNECT_STRING,
-				CONNECT_CHANNEL, clientId));
-	}
-
-	private void closeFayeConnection() {
-		webSocket.sendTextMessage(MessageFormat.format(FAYE_DISCONNECT_STRING,
-				DISCONNECT_CHANNEL, clientId));
-	}
-
-	private void handshake() {
-		webSocket.sendTextMessage(MessageFormat.format(HANDSHAKE_STRING,
-				HANDSHAKE_CHANNEL));
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
-			if (webSocket.isConnected()) {
-				webSocket.disconnect();
-			}
-			webSocket = null;
-		}
-	}
-
-	private void handshake() {
-		String handshakeString = "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\""
-				+ HANDSHAKE_CHANNEL + "\"}";
-		Log.d(TAG, "Handshake: " + handshakeString);
-		webSocket.sendTextMessage(handshakeString);
-=======
-	public boolean isSocketConnected() {
-		return this.webSocket.isConnected();
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
-	}
-
-	private void openFayeConnection() {
-		String connectString = "{\"channel\":\"" + FayeClient.CONNECT_CHANNEL
-				+ "\",\"clientId\":\"" + this.clientId
-				+ "\",\"connectionType\":\"websocket\"}";
-		Log.d(FayeClient.TAG, "Connect: " + connectString);
-		this.webSocket.sendTextMessage(connectString);
-	}
-
-	private void openSocketConnection() {
+		options.setReceiveTextMessagesRaw(true);
 		this.webSocket = new WebSocketConnection();
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 		try {
-			this.webSocket.connect(this.fayeUrl, new WebSocketHandler() {
+			this.mWebSocket.connect(this.mFayeUrl, new WebSocketHandler() {
 
-<<<<<<< HEAD
-		String disconnectString = "{\"channel\":\"" + DISCONNECT_CHANNEL
-				+ "\",\"clientID\":\"" + clientId + "\"}";
-		Log.d(TAG, "Disconnect: " + disconnectString);
-		webSocket.sendTextMessage(disconnectString);
-		clientId = null;
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-	}
-
-	/**
-	 * Subscribes the push client to a channel on the push server
-	 * 
-	 * @param channel
-	 *            The channel to subscribe to
-	 */
-	public void subscribe(String channel) {
-		Log.d(TAG, "Faye is attempting to subscribe to channel \"" + channel
-				+ "\"");
-<<<<<<< HEAD
-<<<<<<< HEAD
-		String subscribe = String.format(SUBSCRIBE_STRING, fayeClientId,
-				(channel.equals("") ? activeSubchannels : channel), authToken);
-		webSocket.sendTextMessage(subscribe);
-=======
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-	}
-
-	/**
-	 * Unsubscribes the push client from a channel on the push server
-	 * 
-	 * @param channel
-	 *            The channel to unsubscribe to
-	 */
-	public void unsubscribe(String channel) {
-		Log.d(TAG, "Faye is attempting to unsubscribe from channel \""
-				+ channel + "\"");
-<<<<<<< HEAD
-<<<<<<< HEAD
-		String unsubscribe = String.format(UNSUBSCRIBE_STRING, fayeClientId,
-				(channel.equals("") ? activeSubchannels : channel));
-		webSocket.sendTextMessage(unsubscribe);
-	}
-
-	/**
-	 * Helper class to manage messages sent from the web socket
-	 * 
-	 * @author Jamison Greeley (atomicrat2552@gmail.com)
-	 */
-	public class FayeHandler extends WebSocketConnectionHandler {
-
-		/**
-		 * Method to handle behavior when the web socket connects
-		 * 
-		 * @see super{@link #onConnect()}
-		 */
-		@Override
-		public void onOpen() {
-			// The socket has connected
-			FayeClient.this.socketConnected = true;
-		}
-
-		/**
-		 * Method to handle when the web socket receives a string message
-		 * 
-		 * @see super{@link #onMessage(String)}
-		 */
-		@Override
-		public void onTextMessage(String message) {
-			// Deserialize the message
-			FayeMessage fayeMessage = new Gson().fromJson(message,
-					FayeMessage.class);
-
-			// If the response is a handshake response
-			if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.HANDSHAKE_CHANNEL)) {
-
-				// If the handshake was successful
-				if (fayeMessage.isSuccessful()) {
-					// Set the client id
-					FayeClient.this.fayeClientId = fayeMessage.getClientId();
-
-					// Tell the listener we connected
-					if (FayeClient.this.fayeListener != null
-							&& FayeClient.this.fayeListener instanceof FayeListener) {
-						FayeClient.this.fayeListener
-								.connectedToServer(FayeClient.this);
-					}
-
-					// Connect the Faye client
-					FayeClient.this.connectFaye();
-				} else {
-					// TODO handle bad handshake
-				}
-			}
-
-			// If the response is a connect response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.CONNECT_CHANNEL)) {
-
-				// If the connect was successful
-				if (fayeMessage.isSuccessful()) {
-					// The Faye connection was successful
-					FayeClient.this.fayeConnected = true;
-
-					// Get the server connected
-					FayeClient.this.connectFaye();
-				} else {
-					// The socket isn't open
-					FayeClient.this.socketConnected = false;
-
-					// Tell the listener we're disconnected
-					if (FayeClient.this.fayeListener != null
-							&& FayeClient.this.fayeListener instanceof FayeListener) {
-						FayeClient.this.fayeListener
-								.disconnectedFromServer(FayeClient.this);
-					}
-				}
-			}
-
-			// If the response is a disconnect response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.DISCONNECT_CHANNEL)) {
-
-				// If the disconnect was successful
-				if (fayeMessage.isSuccessful()) {
-					// Faye is disconnected
-					FayeClient.this.fayeConnected = false;
-
-					// Close the socket
-					FayeClient.this.closeSocketConnection();
-
-					// Tell the listener we've disconnected
-					if (FayeClient.this.fayeListener != null
-							&& FayeClient.this.fayeListener instanceof FayeListener) {
-						FayeClient.this.fayeListener
-								.disconnectedFromServer(FayeClient.this);
-					}
-				} else {
-					// TODO handle bad disconnect
-				}
-			}
-
-			// If the response is a subscription response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.SUBSCRIBE_CHANNEL)) {
-
-				// If the subscription was successful
-				if (fayeMessage.isSuccessful()) {
-					// Add the channel to the list of subscribed channels
-					FayeClient.this.activeSubchannels.add(fayeMessage
-							.getChannel());
-				} else {
-					// TODO handle unsuccessful subscribe
-				}
-			}
-
-			// If the response is an unsubscribe response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.UNSUBSCRIBE_CHANNEL)) {
-
-				// If the unsubscribe was successful
-				if (fayeMessage.isSuccessful()) {
-					// If the channel is subscribed to
-					if (FayeClient.this.activeSubchannels.contains(fayeMessage
-							.getChannel())) {
-						// Remove the channel from the list of subscribed
-						// channels
-						FayeClient.this.activeSubchannels.remove(fayeMessage
-								.getChannel());
-					}
-				} else {
-					// TODO handle unsuccessful unsubscribe
-				}
-			}
-
-			// If the response is from a subscribed channel
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.this.activeSubchannels)) {
-
-				// Send the message data to the listener
-				if (FayeClient.this.fayeListener != null
-						&& FayeClient.this.fayeListener instanceof FayeListener) {
-					FayeClient.this.fayeListener.messageReceived(
-							FayeClient.this, fayeMessage.getData());
-				}
-			}
-
-			// If we get some sort of odd response
-			else {
-				// TODO handling weird responses
-			}
-		}
-
-		/**
-		 * Method to handle when the websocket receives binary data
-		 */
-		@Override
-		public void onBinaryMessage(byte[] data) {
-			// Faye does not send binary data
-		}
-
-		/**
-		 * Method to handle socket behavior when the connection severs
-		 */
-		@Override
-		public void onClose(int code, String reason) {
-			// The socket is closed
-			FayeClient.this.socketConnected = false;
-		}
-
-	}
-=======
-	 */
-	public void openSocketConnection() {
-		Log.d(TAG, "Faye is attempting to open the socket connection");
-
-		if (webSocket != null) {
-			webSocket.disconnect();
-		}
-
-		// Create the socket
-		webSocket = new WebSocketConnection();
-
-		// Try to connect
-		try {
-			webSocket.connect(fayeUrl, fayeHandler);
-			this.socketConnected = true;
-		} catch (WebSocketException e) {
-			Log.e(TAG, "Faye Websocket error: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		Log.d(TAG, "Faye has opened the socket");
-	}
-
-	/**
-	 * Closes the websocket connection. Do this after you close the push client
-	 * connection
-	 */
-	public void closeSocketConnection() {
-		Log.d(TAG, "Faye is attempting to close the socket connection");
-		if (webSocket != null) {
-			webSocket.disconnect();
-			this.socketConnected = false;
-
-			Log.d(TAG, "Faye has closed the socket connection");
-		}
-	}
-
-	/**
-	 * Connect the push client. The websocket must be open for this to work
-	 */
-	public void connectFaye() {
-		// Connect
-		Log.d(TAG, "Faye is attempting to open a connection to the push server");
-
-		// Open the socket if it isn't already
-		if (!webSocket.isConnected()) {
-			openSocketConnection();
-		}
-
-		// Create and send the Faye connect frame
-		String connect = String.format(FAYE_CONNECT_STRING, fayeClientId);
-		webSocket.sendTextMessage(connect);
-
-		// Socket open, handshake push server
-		handshake();
-
-		// Set the object status
-		this.fayeConnected = true;
-		this.disconnectExpected = false;
-
-		// Alert the listener that socket connection is connected
-		if (FayeClient.this.fayeListener != null
-				&& FayeClient.this.fayeListener instanceof FayeListener) {
-			FayeClient.this.fayeListener.connectedToServer(FayeClient.this);
-		}
-
-		Log.d(TAG, "Faye has opened the push connection");
-	}
-
-	/**
-	 * Disconnect the push client. The websocket will not be closed by this
-	 * action, you must close it manually
-	 */
-	public void disconnectFaye() {
-		Log.d(TAG, "Faye is attempting to close the push connection");
-		String disconnect = String.format(FAYE_DISCONNECT_STRING, fayeClientId);
-		webSocket.sendTextMessage(disconnect);
-		this.fayeConnected = false;
-		this.disconnectExpected = true;
-
-		Log.d(TAG, "Faye has closed the push connection");
-	}
-
-	/**
-	 * Handshakes the push client and server
-	 */
-	public void handshake() {
-		webSocket.sendTextMessage(HANDSHAKE_STRING);
-	}
-
-	/**
-	 * Subscribes the push client to a channel on the push server
-	 * 
-	 * @param channel
-	 *            The channel to subscribe to
-	 */
-	public void subscribe(String channel) {
-		Log.d(TAG, "Faye is attempting to subscribe to channel \"" + channel
-				+ "\"");
-		String subscribe = String.format(SUBSCRIBE_STRING, fayeClientId,
-				(channel.equals("") ? activeSubchannels : channel), authToken);
-		webSocket.sendTextMessage(subscribe);
-	}
-
-	/**
-	 * Unsubscribes the push client from a channel on the push server
-	 * 
-	 * @param channel
-	 *            The channel to unsubscribe to
-	 */
-	public void unsubscribe(String channel) {
-		Log.d(TAG, "Faye is attempting to unsubscribe from channel \""
-				+ channel + "\"");
-		String unsubscribe = String.format(UNSUBSCRIBE_STRING, fayeClientId,
-				(channel.equals("") ? activeSubchannels : channel));
-		webSocket.sendTextMessage(unsubscribe);
-	}
-
-	/**
-	 * Helper class to manage messages sent from the web socket
-	 * 
-	 * @author Jamison Greeley (atomicrat2552@gmail.com)
-	 */
-	public class FayeHandler extends WebSocketConnectionHandler {
-
-		/**
-		 * Method to handle behavior when the web socket connects
-		 * 
-		 * @see super{@link #onConnect()}
-		 */
-		@Override
-		public void onOpen() {
-			// The socket has connected
-			FayeClient.this.socketConnected = true;
-		}
-
-		/**
-		 * Method to handle when the web socket receives a string message
-		 * 
-		 * @see super{@link #onMessage(String)}
-		 */
-		@Override
-		public void onTextMessage(String message) {
-			// Deserialize the message
-			FayeMessage fayeMessage = new Gson().fromJson(message,
-					FayeMessage.class);
-
-			// If the response is a handshake response
-			if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.HANDSHAKE_CHANNEL)) {
-
-				// If the handshake was successful
-				if (fayeMessage.isSuccessful()) {
-					// Set the client id
-					FayeClient.this.fayeClientId = fayeMessage.getClientId();
-
-					// Tell the listener we connected
-					if (FayeClient.this.fayeListener != null
-							&& FayeClient.this.fayeListener instanceof FayeListener) {
-						FayeClient.this.fayeListener
-								.connectedToServer(FayeClient.this);
-					}
-
-					// Connect the Faye client
-					FayeClient.this.connectFaye();
-				} else {
-					// TODO handle bad handshake
-				}
-			}
-
-			// If the response is a connect response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.CONNECT_CHANNEL)) {
-
-				// If the connect was successful
-				if (fayeMessage.isSuccessful()) {
-					// The Faye connection was successful
-					FayeClient.this.fayeConnected = true;
-
-					// Get the server connected
-					FayeClient.this.connectFaye();
-				} else {
-					// The socket isn't open
-					FayeClient.this.socketConnected = false;
-
-					// Tell the listener we're disconnected
-					if (FayeClient.this.fayeListener != null
-							&& FayeClient.this.fayeListener instanceof FayeListener) {
-						FayeClient.this.fayeListener
-								.disconnectedFromServer(FayeClient.this);
-					}
-				}
-			}
-
-			// If the response is a disconnect response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.DISCONNECT_CHANNEL)) {
-
-				// If the disconnect was successful
-				if (fayeMessage.isSuccessful()) {
-					// Faye is disconnected
-					FayeClient.this.fayeConnected = false;
-
-					// Close the socket
-					FayeClient.this.closeSocketConnection();
-
-					// Tell the listener we've disconnected
-					if (FayeClient.this.fayeListener != null
-							&& FayeClient.this.fayeListener instanceof FayeListener) {
-						FayeClient.this.fayeListener
-								.disconnectedFromServer(FayeClient.this);
-					}
-				} else {
-					// TODO handle bad disconnect
-				}
-			}
-
-			// If the response is a subscription response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.SUBSCRIBE_CHANNEL)) {
-
-				// If the subscription was successful
-				if (fayeMessage.isSuccessful()) {
-					// Add the channel to the list of subscribed channels
-					FayeClient.this.activeSubchannels.add(fayeMessage
-							.getChannel());
-				} else {
-					// TODO handle unsuccessful subscribe
-				}
-			}
-
-			// If the response is an unsubscribe response
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.UNSUBSCRIBE_CHANNEL)) {
-
-				// If the unsubscribe was successful
-				if (fayeMessage.isSuccessful()) {
-					// If the channel is subscribed to
-					if (FayeClient.this.activeSubchannels.contains(fayeMessage
-							.getChannel())) {
-						// Remove the channel from the list of subscribed
-						// channels
-						FayeClient.this.activeSubchannels.remove(fayeMessage
-								.getChannel());
-					}
-				} else {
-					// TODO handle unsuccessful unsubscribe
-				}
-			}
-
-			// If the response is from a subscribed channel
-			else if (fayeMessage.getChannel().toLowerCase()
-					.equals(FayeClient.this.activeSubchannels)) {
-
-				// Send the message data to the listener
-				if (FayeClient.this.fayeListener != null
-						&& FayeClient.this.fayeListener instanceof FayeListener) {
-					FayeClient.this.fayeListener.messageReceived(
-							FayeClient.this, fayeMessage.getData());
-				}
-			}
-
-			// If we get some sort of odd response
-			else {
-				// TODO handling weird responses
-			}
-		}
-
-		/**
-		 * Method to handle when the websocket receives binary data
-		 */
-		@Override
-		public void onBinaryMessage(byte[] data) {
-			// Faye does not send binary data
-		}
-
-		/**
-		 * Method to handle socket behavior when the connection severs
-		 */
-		@Override
-		public void onClose(int code, String reason) {
-			// The socket is closed
-			FayeClient.this.socketConnected = false;
-		}
-
-	}
-}
-=======
-	}
-
-	/**
-	 * Handles the event of the web socket opening. Will automatically open the
-	 * Faye connection when the socket has opened.
-	 */
-	@Override
-	public void onOpen() {
-		super.onOpen();
-		openFayeConnection();
-		handshake();
-=======
-	}
-=======
 				public void onBinaryMessage(byte[] payload) {
-					throw new UnsupportedOperationException(
-							"This type of payload isn't supported yet");
+					onTextMessage(new String(payload));
 				}
 
 				public void onClose(int code, String reason) {
@@ -1154,19 +251,29 @@ public class FayeClient {
 				}
 
 				public void onOpen() {
-					Log.d(FayeClient.TAG, "Socket opened");
-					webSocket
-							.sendTextMessage("{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\""
-									+ FayeClient.HANDSHAKE_CHANNEL + "\"}");
+					String handshakeString = "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\""
+							+ FayeClient.HANDSHAKE_CHANNEL + "\"}";
+					try {
+<<<<<<< HEAD
+						mWebSocket.sendBinaryMessage(handshakeString
+=======
+						webSocket.sendBinaryMessage(handshakeString
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
+								.getBytes("UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
 				}
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 
 				public void onRawTextMessage(byte[] payload) {
 					onTextMessage(new String(payload));
 				}
 
 				public void onTextMessage(String payload) {
-					Log.d(FayeClient.TAG, "Text message payload: " + payload);
+					if (DEBUG) {
+						Log.d(FayeClient.TAG, "Text message payload: "
+								+ payload);
+					}
 					Gson gson = new Gson();
 					FayeMessage[] messages = gson.fromJson(payload,
 							FayeMessage[].class);
@@ -1175,142 +282,161 @@ public class FayeClient {
 						processTextMessage(message, channel);
 					}
 				}
-			});
+			}, options);
+<<<<<<< HEAD
+			if (DEBUG) {
+				Log.d(FayeClient.TAG, "Service is opening the web socket");
+			}
+=======
 			Log.d(FayeClient.TAG, "Service is opening the web socket");
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 		} catch (WebSocketException e) {
 			e.printStackTrace();
 		}
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Automated method to handle messages coming across the web socket.
-	 */
-	@Override
-	public void onTextMessage(String payload) {
-<<<<<<< HEAD
-		super.onTextMessage(payload);
-
-=======
-		Log.d(TAG, "Text message payload: " + payload);
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-		Gson gson = new Gson();
-		FayeMessage message = gson.fromJson(payload, FayeMessage.class);
-		String channel = message.getChannel();
-
-		if (channel.equals(HANDSHAKE_CHANNEL)) {
-			if (message.isSuccessful()) {
-<<<<<<< HEAD
-
-=======
-				clientId = message.getClientId();
-				openFayeConnection();
-			} else {
-				Log.e(TAG, "Faye failed to handshake");
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
-	private void processTextMessage(FayeMessage message, String channel) {
+	protected void processTextMessage(FayeMessage message, String channel) {
 		if (channel.equals(FayeClient.HANDSHAKE_CHANNEL)) {
 			if (message.isSuccessful()) {
-				this.clientId = message.getClientId();
+<<<<<<< HEAD
+				mClientId = message.getClientId();
+=======
+				clientId = message.getClientId();
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 				openFayeConnection();
 			} else {
-				Log.e(FayeClient.TAG, "Faye failed to handshake");
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
+				if (DEBUG) {
+					Log.e(FayeClient.TAG, "Faye failed to handshake");
+				}
 			}
 		} else if (channel.equals(FayeClient.CONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
 <<<<<<< HEAD
-				fayeConnected = true;
-<<<<<<< HEAD
+				mFayeConnected = true;
+				mFayeListener.connectedToServer(this);
+				scheduleHeartbeat(message.getAdvice().getInterval());
+				if (DEBUG) {
+					Log.d(TAG, "Faye connected");
+				}
 			} else {
-				fayeConnected = false;
-				Log.d(TAG, "Faye failed to connect");
-=======
-				fayeListener.connectedToServer(this);
-			} else {
-				fayeConnected = false;
-				Log.e(TAG, "Faye failed to connect");
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
-				this.fayeConnected = true;
-				this.fayeListener.connectedToServer(this);
-			} else {
-				this.fayeConnected = false;
-				Log.e(FayeClient.TAG, "Faye failed to connect");
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
+				mFayeConnected = false;
+				if (DEBUG) {
+					Log.e(FayeClient.TAG, "Faye failed to connect");
+				}
 			}
 		} else if (channel.equals(FayeClient.DISCONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
-<<<<<<< HEAD
-				fayeConnected = false;
-<<<<<<< HEAD
+				mFayeConnected = false;
+				mFayeListener.disconnectedFromServer(this);
 				closeSocketConnection();
 			} else {
-				fayeConnected = true;
-				Log.d(TAG, "Faye failed to disconnect");
+				mFayeConnected = true;
+				if (DEBUG) {
+					Log.e(FayeClient.TAG, "Faye failed to disconnect");
+				}
+			}
+		} else if (channel.equals(FayeClient.SUBSCRIBE_CHANNEL)) {
+			if (message.isSuccessful()) {
+				if (DEBUG) {
+					Log.i(FayeClient.TAG, "Faye subscribed to channel"
+							+ message.getSubscription());
+				}
+				mActiveSubchannels.add(message.getSubscription());
 =======
+				fayeConnected = true;
+				fayeListener.connectedToServer(this);
+				Log.d(TAG, "Faye connected");
+			} else {
+				fayeConnected = false;
+				Log.e(FayeClient.TAG, "Faye failed to connect");
+			}
+		} else if (channel.equals(FayeClient.DISCONNECT_CHANNEL)) {
+			if (message.isSuccessful()) {
+				fayeConnected = false;
 				fayeListener.disconnectedFromServer(this);
 				closeSocketConnection();
 			} else {
 				fayeConnected = true;
-				Log.e(TAG, "Faye failed to disconnect");
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-=======
-				this.fayeConnected = false;
-				this.fayeListener.disconnectedFromServer(this);
-				closeSocketConnection();
-			} else {
-				this.fayeConnected = true;
 				Log.e(FayeClient.TAG, "Faye failed to disconnect");
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 			}
 		} else if (channel.equals(FayeClient.SUBSCRIBE_CHANNEL)) {
 			if (message.isSuccessful()) {
 				Log.i(FayeClient.TAG,
 						"Faye subscribed to channel"
 								+ message.getSubscription());
-				this.activeSubchannels.add(message.getSubscription());
+				activeSubchannels.add(message.getSubscription());
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 			} else {
-				Log.e(FayeClient.TAG, MessageFormat.format(
-						"Faye failed to connect to channel {0} with error {1}",
-						message.getSubscription(), message.getError()));
+				if (DEBUG) {
+					Log.e(FayeClient.TAG,
+							MessageFormat
+									.format("Faye failed to connect to channel {0} with error {1}",
+											message.getSubscription(),
+											message.getError()));
+				}
 				// TODO Handle failed subscribe
 			}
 		} else if (channel.equals(FayeClient.UNSUBSCRIBE_CHANNEL)) {
+<<<<<<< HEAD
+			if (DEBUG) {
+				Log.i(FayeClient.TAG, "Faye unsubscribed from channel "
+						+ message.getSubscription());
+			}
+		} else if (this.mActiveSubchannels.contains(channel)) {
+			mFayeListener.messageReceived(this, message);
+=======
 			Log.i(FayeClient.TAG,
 					"Faye unsubscribed from channel "
 							+ message.getSubscription());
-<<<<<<< HEAD
-		} else if (activeSubchannels.contains(channel)) {
-<<<<<<< HEAD
-			// TODO handle a message from a channel
-		} else {
-			Log.e(TAG, "Faye recieved a message with no subscription for channel " + message.getSubscription());
-=======
-			fayeListener.messageReceived(this, message);
-=======
 		} else if (this.activeSubchannels.contains(channel)) {
-			this.fayeListener.messageReceived(this, message);
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
+			fayeListener.messageReceived(this, message);
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 		} else {
-			Log.e(FayeClient.TAG,
-					"Faye recieved a message with no subscription for channel "
-							+ message.getSubscription());
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
+			if (DEBUG) {
+				Log.e(FayeClient.TAG,
+						"Faye recieved a message with no subscription for channel "
+								+ message.getSubscription());
+			}
 		}
 	}
 
-	private void processClose(int code) {
+	protected void scheduleHeartbeat(int interval) {
+		if (interval == 0) {
+			openFayeConnection();
+		} else {
+			if (mHeartbeatThread == null
+					|| mHeartbeatThread.getState() != State.RUNNABLE) {
+				mHeartbeatThread = new FayeHeartbeatThread(this);
+			}
+			mHeartbeatThread.setDelay(interval);
+			mHeartbeatThread.start();
+		}
+	}
+
+	protected void processClose(int code) {
 		switch (code) {
+<<<<<<< HEAD
+		case WebSocketHandler.CLOSE_INTERNAL_ERROR:
+			FayeClient.this.mWebSocket = new WebSocketConnection();
+			connect();
+			break;
+		case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
+		case WebSocketHandler.CLOSE_CANNOT_CONNECT:
+		case WebSocketHandler.CLOSE_CONNECTION_LOST:
+			while (!FayeClient.this.mWebSocket.isConnected()) {
+				try {
+					connect();
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+=======
 			case WebSocketHandler.CLOSE_INTERNAL_ERROR:
 				FayeClient.this.webSocket = new WebSocketConnection();
 				connect();
 				break;
+			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
 			case WebSocketHandler.CLOSE_CANNOT_CONNECT:
 			case WebSocketHandler.CLOSE_CONNECTION_LOST:
-			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
 				while (!FayeClient.this.webSocket.isConnected()) {
 					try {
 						connect();
@@ -1318,44 +444,30 @@ public class FayeClient {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 				}
-			case WebSocketHandler.CLOSE_NORMAL:
-				break;
+			}
+		case WebSocketHandler.CLOSE_NORMAL:
+			break;
 		}
 	}
 
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
-	 * Handles the socket losing connection. If the disconnect is expected, it
-	 * gracefully ends. If the disconnect is unexpected, the socket will
-	 * re-establish the Faye connection. <br />
-	 * <br />
-	 * This method is fully automated.
+	 * Causes the client to heartbeat to the server. This should never be
+	 * explicity called.
 	 */
-	@Override
-	public void onClose(int code, String reason) {
-		super.onClose(code, reason);
-
-		if (!disconnectExpected) {
-			connect();
-		} else {
-			closeSocketConnection();
-		}
+	public void heartbeat() {
+		openFayeConnection();
 	}
-}
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
-	 * Receives payload as raw text. Converts raw message into text and parses
-	 * it
-=======
+
+	/**
 	 * Sets the FayeListener attached to the client
 	 * 
 	 * @param mFayeListener
 	 *            The FayeListener to attach to the client
 	 */
 	public void setFayeListener(FayeListener fayeListener) {
-		this.fayeListener = fayeListener;
+		this.mFayeListener = fayeListener;
 	}
 
 	/**
@@ -1363,18 +475,32 @@ public class FayeClient {
 	 * 
 	 * @param channel
 	 *            The channel to subscribe to
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 	 */
 	public void subscribe(String channel) {
 		String subscribe = "{\"clientId\":\""
-				+ this.clientId
+				+ this.mClientId
 				+ "\",\"subscription\":\""
 				+ channel
 				+ "\",\"channel\":\"/meta/subscribe\",\"ext\":{\"authToken\":\""
+<<<<<<< HEAD
+				+ this.mAuthToken + "\"}}";
+		if (DEBUG) {
+			Log.d(FayeClient.TAG,
+					"Faye is attempting to subscribe to channel \"" + channel
+							+ "\"");
+		}
+		try {
+			this.mWebSocket.sendBinaryMessage(subscribe.getBytes("UTF-8"));
+=======
 				+ this.authToken + "\"}}";
 		Log.d(FayeClient.TAG, "Faye is attempting to subscribe to channel \""
 				+ channel + "\"");
-		this.webSocket.sendTextMessage(subscribe);
+		try {
+			this.webSocket.sendBinaryMessage(subscribe.getBytes("UTF-8"));
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -1384,13 +510,26 @@ public class FayeClient {
 	 *            The channel to unsubscribe to
 	 */
 	public void unsubscribe(String channel) {
-		String unsubscribe = "{\"clientId\":\"" + this.clientId
+		String unsubscribe = "{\"clientId\":\"" + this.mClientId
 				+ "\",\"subscription\":\"" + channel
 				+ "\",\"channel\":\"/meta/unsubscribe\"}";
+<<<<<<< HEAD
+		if (DEBUG) {
+			Log.d(FayeClient.TAG,
+					"Faye is attempting to unsubscribe from channel \""
+							+ channel + "\"");
+		}
+		try {
+			this.mWebSocket.sendBinaryMessage(unsubscribe.getBytes("UTF-8"));
+=======
 		Log.d(FayeClient.TAG,
 				"Faye is attempting to unsubscribe from channel \"" + channel
 						+ "\"");
-		this.webSocket.sendTextMessage(unsubscribe);
+		try {
+			this.webSocket.sendBinaryMessage(unsubscribe.getBytes("UTF-8"));
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1

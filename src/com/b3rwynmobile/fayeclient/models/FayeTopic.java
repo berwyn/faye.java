@@ -20,34 +20,22 @@
 
 package com.b3rwynmobile.fayeclient.models;
 
-public class FayeAdvice {
+public class FayeTopic {
 
-	private String	reconnect;
-	private int		interval;
-	private long	timeout;
-
-	public String getReconnect() {
-		return reconnect;
+	private String	type;
+	private String	id;
+	
+	public String getType() {
+		return type;
 	}
-
-	public void setReconnect(String reconnect) {
-		this.reconnect = reconnect;
+	public void setType(String type) {
+		this.type = type;
 	}
-
-	public int getInterval() {
-		return interval;
+	public String getId() {
+		return id;
 	}
-
-	public void setInterval(int interval) {
-		this.interval = interval;
-	}
-
-	public long getTimeout() {
-		return timeout;
-	}
-
-	public void setTimeout(long timeout) {
-		this.timeout = timeout;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
