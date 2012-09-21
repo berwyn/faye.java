@@ -48,10 +48,6 @@ public interface FayeListener {
 	 * @param message
 	 *            The message the client received
 	 */
-<<<<<<< HEAD
 	public void messageReceived(FayeClient faye, FayeMessage message);
-=======
-	public void messageReceived(FayeClient faye, FayeMessage msg);
->>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 
 }

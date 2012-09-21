@@ -34,7 +34,6 @@ import android.widget.Toast;
 public class FayeService extends Service {
 
 	// Debug tag
-<<<<<<< HEAD
 	protected final String			TAG				= "Faye Service";
 
 	// String constants
@@ -44,23 +43,8 @@ public class FayeService extends Service {
 	final protected static String	AUTH_TOKEN		= "SUPER SECRET TOKEN";
 
 	// Data objects
-	protected FayeClient			faye;
-	protected FayeBinder			fayeBinder;
-=======
-	@SuppressWarnings("unused")
-	private final String		TAG				= "Faye Service";
-
-	// String constants
-	final private static String	FAYE_HOST		= "ws://push01.cloudsdale.org";
-	final private static String	FAYE_PORT		= "80";
-	final private static String	INITIAL_CHANNEL	= "/push";
-	@SuppressWarnings("unused")
-	final private static String	AUTH_TOKEN		= "SUPER SECRET TOKEN";
-
-	// Data objects
-	private FayeClient			faye;
-	private FayeBinder			fayeBinder;
->>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
+	protected FayeClient			mFaye;
+	protected FayeBinder			mFayeBinder;
 
 	/**
 	 * Default constructor
@@ -76,7 +60,7 @@ public class FayeService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		setup();
-		return this.fayeBinder;
+		return this.mFayeBinder;
 	}
 
 	@Override
@@ -104,10 +88,10 @@ public class FayeService extends Service {
 				+ FayeService.INITIAL_CHANNEL;
 
 		// Create the client
-		this.faye = new FayeClient(fayeUrl);
+		this.mFaye = new FayeClient(fayeUrl);
 
 		// Create the binder
-		this.fayeBinder = new FayeBinder(this, this.faye);
+		this.mFayeBinder = new FayeBinder(this, this.mFaye);
 	}
 
 	/**
@@ -118,14 +102,14 @@ public class FayeService extends Service {
 			Toast.makeText(getApplicationContext(), "Faye Started",
 					Toast.LENGTH_SHORT).show();
 		}
-		this.faye.connect();
+		this.mFaye.connect();
 	}
 
 	/**
 	 * Stops the Faye client
 	 */
 	public void stopFaye() {
-		this.faye.disconnect();
+		this.mFaye.disconnect();
 	}
 
 }
