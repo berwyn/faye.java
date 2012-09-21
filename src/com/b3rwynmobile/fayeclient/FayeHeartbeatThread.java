@@ -18,36 +18,34 @@
  ******************************************************************************/
 // @formatter:on
 
-package com.b3rwynmobile.fayeclient.models;
+package com.b3rwynmobile.fayeclient;
 
-public class FayeAdvice {
+public class FayeHeartbeatThread extends Thread {
 
-	private String	reconnect;
-	private int		interval;
-	private long	timeout;
+	private int			delay;
+	private FayeClient	client;
 
-	public String getReconnect() {
-		return reconnect;
+	public FayeHeartbeatThread(FayeClient client) {
+		super();
+		this.client = client;
 	}
 
-	public void setReconnect(String reconnect) {
-		this.reconnect = reconnect;
+	@Override
+	public void run() {
+		int sleepCount = 0;
+		while (sleepCount < delay) {
+			try {
+				Thread.sleep(1000);
+				sleepCount++;
+			} catch (InterruptedException e) {
+				// Do nothing, server will send a timeout
+			}
+		}
+		client.heartbeat();
 	}
 
-	public int getInterval() {
-		return interval;
-	}
-
-	public void setInterval(int interval) {
-		this.interval = interval;
-	}
-
-	public long getTimeout() {
-		return timeout;
-	}
-
-	public void setTimeout(long timeout) {
-		this.timeout = timeout;
+	public void setDelay(int delay) {
+		this.delay = delay;
 	}
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Faye Client Tests</name>
+	<name>Faye Tests</name>
 	<comment></comment>
 	<projects>
 		<project>Faye Client Demo</project>
