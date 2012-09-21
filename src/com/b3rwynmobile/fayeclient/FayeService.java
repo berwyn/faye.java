@@ -34,6 +34,7 @@ import android.widget.Toast;
 public class FayeService extends Service {
 
 	// Debug tag
+<<<<<<< HEAD
 	protected final String			TAG				= "Faye Service";
 
 	// String constants
@@ -45,6 +46,21 @@ public class FayeService extends Service {
 	// Data objects
 	protected FayeClient			faye;
 	protected FayeBinder			fayeBinder;
+=======
+	@SuppressWarnings("unused")
+	private final String		TAG				= "Faye Service";
+
+	// String constants
+	final private static String	FAYE_HOST		= "ws://push01.cloudsdale.org";
+	final private static String	FAYE_PORT		= "80";
+	final private static String	INITIAL_CHANNEL	= "/push";
+	@SuppressWarnings("unused")
+	final private static String	AUTH_TOKEN		= "SUPER SECRET TOKEN";
+
+	// Data objects
+	private FayeClient			faye;
+	private FayeBinder			fayeBinder;
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 
 	/**
 	 * Default constructor
