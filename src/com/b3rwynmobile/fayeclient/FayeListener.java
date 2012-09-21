@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-package com.b3rwynmobile.fayeclient;
-
-=======
-=======
 // @formatter:off
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
 /******************************************************************************
  *
  *  Copyright 2011-2012 b3rwyn Mobile Solutions
@@ -29,8 +22,7 @@ package com.b3rwynmobile.fayeclient;
 
 import com.b3rwynmobile.fayeclient.models.FayeMessage;
 
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-public class FayeListener {
+public interface FayeListener {
 
 	/**
 	 * Method to handle logic when the client connects to the server
@@ -38,18 +30,7 @@ public class FayeListener {
 	 * @param faye
 	 *            The client that's established a connection
 	 */
-<<<<<<< HEAD
-<<<<<<< HEAD
-	public void messageReceived(FayeClient faye, String msg) {
-=======
-	public void messageReceived(FayeClient faye, FayeMessage msg) {
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-		// TODO handle message
-=======
-	public void connectedToServer(FayeClient faye) {
-		// TODO What to do when the connection is successful
->>>>>>> a67cfa5c97ba0e6b2c7f8e098a1efeb4453b6be3
-	}
+	public void connectedToServer(FayeClient faye);
 
 	/**
 	 * Method to handle client getting disconnected from the server prematurely
@@ -57,40 +38,20 @@ public class FayeListener {
 	 * @param faye
 	 *            The client that's been disconnected
 	 */
-	public void disconnectedFromServer(FayeClient faye) {
-		if (!faye.isDisconnectExpected()) {
-			// If the disconnect isn't expected
-<<<<<<< HEAD
-<<<<<<< HEAD
-			if (faye.isSocketConnected()) {
-				// If the socket is still open, reconnect push client
-				faye.connectFaye();
-			} else {
-				// Else open the socket and connect Faye
-				faye.openSocketConnection();
-				faye.connectFaye();
-			}
-=======
-			// TODO reconnect Faye
->>>>>>> 10e3aed41feff49b4a1cd57d1bebf3b1be3198fd
-=======
-			// TODO reconnect Faye
->>>>>>> 7a7ae306695f6f45ec0bd1d6774c847ad24749c1
-		} else {
-			// TODO logic for when connection is manually closed
-		}
-	}
+	public void disconnectedFromServer(FayeClient faye);
 
 	/**
 	 * Method used to take action when the client receives a message
 	 * 
 	 * @param faye
 	 *            The client receiving the message
-	 * @param msg
+	 * @param message
 	 *            The message the client received
 	 */
-	public void messageReceived(FayeClient faye, FayeMessage msg) {
-		// TODO handle message
-	}
+<<<<<<< HEAD
+	public void messageReceived(FayeClient faye, FayeMessage message);
+=======
+	public void messageReceived(FayeClient faye, FayeMessage msg);
+>>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 
 }
