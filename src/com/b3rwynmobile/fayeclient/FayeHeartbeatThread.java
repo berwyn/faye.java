@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // @formatter:off
 /******************************************************************************
  *
@@ -19,8 +18,6 @@
  ******************************************************************************/
 // @formatter:on
 
-=======
->>>>>>> 9dfa758ef3a077004cefbbb3232fc23b01c490b4
 package com.b3rwynmobile.fayeclient;
 
 public class FayeHeartbeatThread extends Thread {
