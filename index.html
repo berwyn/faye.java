@@ -1,62 +1,89 @@
 <!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Faye-android by atomicrat2552</title>
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Faye-android</h1>
+        <p class="header">A Faye client for Android</p>
 
-  <title>Faye-android</title>
-  <meta name="description" content="A Faye client for Android">
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/atomicrat2552/Faye-Android/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/atomicrat2552/Faye-Android/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/atomicrat2552/Faye-Android">View On GitHub</a></li>
+        </ul>
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/atomicrat2552">atomicrat2552</a></p>
 
-</head>
 
-<body>
+      </header>
+      <section>
+        <h1>Faye-Android</h1>
 
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Faye-android</h1>
-    </header>
-    <div id="container">
-      <p class="tagline">A Faye client for Android</p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
-          <a href="https://github.com/atomicrat2552/Faye-Android/tarball/master" class="download-button tar"><span>Download</span></a>
-          <a href="https://github.com/atomicrat2552/Faye-Android/zipball/master" class="download-button zip"><span>Download</span></a>
-          <a href="https://github.com/atomicrat2552/Faye-Android" class="code">View Faye-android on GitHub</a>
-        </div>
-        <span class="blc"></span><span class="trc"></span>
-        </div>
-        <article class="markdown-body">
-          <p>Based <a href="https://github.com/koush" class="user-mention">@koush</a>'s android websocket framework and on code from here: <a href="https://code.google.com/p/android-faye-client/">https://code.google.com/p/android-faye-client/</a></p>
-        </article>
-      </div>
+<p>This is a standalone library designed to allow Android applications designed for 2.2 Froyo or later to become clients for the Faye PubSub protocol.</p>
+
+<h1>Developers</h1>
+
+<p>Jamison Greeley - <a href="mailto:atomicrat2552@gmail.com">atomicrat2552@gmail.com</a></p>
+
+<h1>Thanks to</h1>
+
+<p>Tavendo - For the fantastic <a href="https://github.com/tavendo/AutobahnAndroid">Autobahn websocket library</a>
+Tim van Ginderen - For giving me a <a href="https://code.google.com/p/android-faye-client/">launching point</a></p>
+
+<h1>License</h1>
+
+<blockquote>
+<p>Copyright 2011-2012 b3rwyn Mobile Solutions</p>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at</p>
+
+<pre><code> http://www.apache.org/licenses/LICENSE-2.0
+</code></pre>
+
+<p>Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.</p>
+</blockquote>
+
+<h1>Apps</h1>
+
+<p>Got an app that uses this library? Drop me a line and I'll feature it here!</p>
+
+<h1>Documentation</h1>
+
+<p>I know, there is none. I promise I'll get some quick setup documentation here soon!
+For now, simply bind the service using its onBind(), then use the public methods the client provides :)</p>
+
+<h1>Todo</h1>
+
+<ol>
+<li>Documentation</li>
+<li>Threading, she's pretty heavy right now</li>
+<li>Clean up code, remove old stuff</li>
+</ol>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/atomicrat2552" class="avatar"><img src="https://secure.gravatar.com/avatar/bf1f88b95794ff325946fded236e081d?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="48" height="48"/></a> <a href="https://github.com/atomicrat2552">atomicrat2552</a> maintains <a href="https://github.com/atomicrat2552/Faye-Android">Faye-android</a></p>
-
-
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/atomicrat2552/Faye-Android/tarball/master" class="tar">tar</a><a href="https://github.com/atomicrat2552/Faye-Android/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
-
-  
-</body>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
 </html>
