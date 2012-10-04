@@ -45,32 +45,32 @@ import java.util.List;
 public class FayeClient {
 
 	// Debug tag
-	protected static final String TAG = "Faye Client";
+	protected static final String	TAG					= "Faye Client";
 
 	// Channel constants
-	protected static final String HANDSHAKE_CHANNEL = "/meta/handshake";
-	protected static final String CONNECT_CHANNEL = "/meta/connect";
-	protected static final String DISCONNECT_CHANNEL = "/meta/disconnect";
-	protected static final String SUBSCRIBE_CHANNEL = "/meta/subscribe";
-	protected static final String UNSUBSCRIBE_CHANNEL = "/meta/unsubscribe";
+	protected static final String	HANDSHAKE_CHANNEL	= "/meta/handshake";
+	protected static final String	CONNECT_CHANNEL		= "/meta/connect";
+	protected static final String	DISCONNECT_CHANNEL	= "/meta/disconnect";
+	protected static final String	SUBSCRIBE_CHANNEL	= "/meta/subscribe";
+	protected static final String	UNSUBSCRIBE_CHANNEL	= "/meta/unsubscribe";
 
 	// Debug flag
-	protected static final boolean DEBUG = true;
+	protected static final boolean	DEBUG				= true;
 
 	// Data objects
-	protected WebSocketConnection mWebSocket;
-	protected FayeListener mFayeListener;
-	protected FayeHeartbeatThread mHeartbeatThread;
+	protected WebSocketConnection	mWebSocket;
+	protected FayeListener			mFayeListener;
+	protected FayeHeartbeatThread	mHeartbeatThread;
 
 	// Connection fields
-	protected String mFayeUrl;
-	protected String mAuthToken;
-	protected List<String> mActiveSubchannels;
-	protected String mClientId;
+	protected String				mFayeUrl;
+	protected String				mAuthToken;
+	protected List<String>			mActiveSubchannels;
+	protected String				mClientId;
 
 	// Status fields
-	protected boolean mFayeConnected;
-	protected boolean mDisconnectExpected;
+	protected boolean				mFayeConnected;
+	protected boolean				mDisconnectExpected;
 
 	/**
 	 * Simplified constructor
@@ -124,9 +124,7 @@ public class FayeClient {
 	}
 
 	protected void closeFayeConnection() {
-		if (this.mClientId == null) {
-			return;
-		}
+		if (this.mClientId == null) { return; }
 
 		String disconnectString = "{\"channel\":\""
 				+ FayeClient.DISCONNECT_CHANNEL + "\",\"clientID\":\""
@@ -384,23 +382,23 @@ public class FayeClient {
 
 	protected void processClose(int code) {
 		switch (code) {
-		case WebSocketHandler.CLOSE_INTERNAL_ERROR:
-			FayeClient.this.mWebSocket = new WebSocketConnection();
-			connect();
-			break;
-		case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
-		case WebSocketHandler.CLOSE_CANNOT_CONNECT:
-		case WebSocketHandler.CLOSE_CONNECTION_LOST:
-			while (!FayeClient.this.mWebSocket.isConnected()) {
-				try {
-					connect();
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			case WebSocketHandler.CLOSE_INTERNAL_ERROR:
+				FayeClient.this.mWebSocket = new WebSocketConnection();
+				connect();
+				break;
+			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
+			case WebSocketHandler.CLOSE_CANNOT_CONNECT:
+			case WebSocketHandler.CLOSE_CONNECTION_LOST:
+				while (!FayeClient.this.mWebSocket.isConnected()) {
+					try {
+						connect();
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}
-		case WebSocketHandler.CLOSE_NORMAL:
-			break;
+			case WebSocketHandler.CLOSE_NORMAL:
+				break;
 		}
 	}
 
@@ -466,6 +464,47 @@ public class FayeClient {
 			this.mWebSocket.sendBinaryMessage(unsubscribe.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Sends a text message to the Faye server
+	 * 
+	 * @param message
+	 *            The string message to send to the server
+	 */
+	public void sendTextMessage(String message) {
+		if (isFayeConnected()) {
+			mWebSocket.sendTextMessage(message);
+		}
+	}
+
+	/**
+	 * Sends a text message as UTF-8 encoded binary to the Faye server
+	 * 
+	 * @param message
+	 *            The string message to send to the server
+	 */
+	public void sendRawTextMessage(String message) {
+		if (isFayeConnected()) {
+			try {
+				mWebSocket.sendRawTextMessage(message.getBytes("UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Sends a binary payload to the Faye server
+	 * 
+	 * @param payload
+	 *            The binary byte[] payload to send to the server
+	 */
+	public void sendBinaryMessage(byte[] payload) {
+		if (isFayeConnected()) {
+			mWebSocket.sendBinaryMessage(payload);
 		}
 	}
 }
