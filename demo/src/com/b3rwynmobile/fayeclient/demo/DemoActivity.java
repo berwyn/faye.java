@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.b3rwynmobile.fayeclient.FayeBinder;
 import com.b3rwynmobile.fayeclient.FayeClient;
 import com.b3rwynmobile.fayeclient.FayeListener;
@@ -85,7 +84,7 @@ public class DemoActivity extends Activity implements FayeListener,
 
 	public void messageReceived(FayeClient faye, FayeMessage message) {
 		Toast.makeText(this, "Faye received message: "
-		        + message.getData().toString(), Toast.LENGTH_LONG);
+		        + message.getData().toString(), Toast.LENGTH_LONG).show();
 	}
 
 	public void onServiceConnected(ComponentName name, IBinder service) {
@@ -104,7 +103,7 @@ public class DemoActivity extends Activity implements FayeListener,
 		if (mBinder != null) {
 			mBinder.getFayeClient().subscribe(channel);
 		} else {
-			Toast.makeText(this, "Please connect Faye first", Toast.LENGTH_LONG);
+			Toast.makeText(this, "Please connect Faye first", Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -114,7 +113,7 @@ public class DemoActivity extends Activity implements FayeListener,
 		} else {
 			Toast.makeText(this,
 			        "Please connect Faye before trying to send a message",
-			        Toast.LENGTH_LONG);
+			        Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -124,7 +123,7 @@ public class DemoActivity extends Activity implements FayeListener,
 		} else {
 			Toast.makeText(this,
 			        "Please connect Faye before attempting to send a message",
-			        Toast.LENGTH_LONG);
+			        Toast.LENGTH_LONG).show();
 		}
 	}
 
