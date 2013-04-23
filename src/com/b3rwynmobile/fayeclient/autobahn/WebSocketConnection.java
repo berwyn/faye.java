@@ -26,6 +26,7 @@ import java.nio.channels.SocketChannel;
 
 import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -293,10 +294,11 @@ public class WebSocketConnection implements WebSocket {
       }
    }
 
-
+   //this method causes a {@link HandlerLeak} FIXME
    /**
-    * Create master message handler.
+    * Create master message handler. 
     */
+   @SuppressLint("HandlerLeak")
    protected void createHandler() {
 
       mMasterHandler = new Handler() {
