@@ -9,6 +9,7 @@ import android.util.Log;
  */
 public class FayeConfigurations {
 
+	// TODO a way to force an override the shared instance and FAYE_xx variables
 	/**
 	 * Singleton access
 	 */
