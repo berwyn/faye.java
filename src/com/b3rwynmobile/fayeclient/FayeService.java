@@ -34,15 +34,9 @@ import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
  */
 public class FayeService extends Service {
 
-	// String constants
-	final protected static String	FAYE_HOST	    = "YOUR_ADDRESS";	      // ws://someurl.com
-	final protected static String	FAYE_PORT	    = "YOUR_PORT";	          // 80
-	final protected static String	INITIAL_CHANNEL	= "YOUR_INITIAL_CHANNEL"; // /push
-	final protected static String	AUTH_TOKEN	    = "SUPER SECRET TOKEN";
-
 	// Data objects
-	protected FayeClient	      mFaye;
-	protected FayeBinder	      mFayeBinder;
+	protected FayeClient	mFaye;
+	protected FayeBinder	mFayeBinder;
 
 	/**
 	 * Default constructor
@@ -83,11 +77,10 @@ public class FayeService extends Service {
 	protected void setup() {
 		FayeConfigurations.tracker(this);
 
-		String fayeUrl = FayeService.FAYE_HOST + ":" + FayeService.FAYE_PORT
-		        + FayeService.INITIAL_CHANNEL;
-
 		// Create the client
-		this.mFaye = new FayeClient(fayeUrl);
+		this.mFaye = new FayeClient(FayeConfigurations.shared.FAYE_URL,
+		        FayeConfigurations.shared.FAYE_INITIAL_CHANNEL,
+		        FayeConfigurations.shared.FAYE_AUTH_TOKEN);
 
 		// Create the binder
 		this.mFayeBinder = new FayeBinder(this, this.mFaye);

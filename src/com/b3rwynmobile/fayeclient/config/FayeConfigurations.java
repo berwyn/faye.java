@@ -14,6 +14,10 @@ public class FayeConfigurations {
 	 */
 	public static FayeConfigurations	shared	             = new FayeConfigurations();
 
+	public String	                 FAYE_URL	             = "ws://your.url:80/mount";
+	public String	                 FAYE_INITIAL_CHANNEL	 = "/your_channel";
+	public String	                 FAYE_AUTH_TOKEN	     = "";
+
 	public boolean	                 logEnabled	             = false;
 	public boolean	                 logMethodTrackerEnabled	= false;
 	public boolean	                 logExceptionsEnabled	 = false;
