@@ -25,10 +25,14 @@ import java.lang.Thread.State;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
 import com.b3rwynmobile.fayeclient.models.FayeMessage;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
@@ -122,10 +126,12 @@ public class FayeClient {
 		FayeConfigurations.tracker(this);
 		if (this.mClientId == null) { return; }
 
-		String disconnectString = "{\"channel\":\""
-		        + FayeClient.DISCONNECT_CHANNEL + "\",\"clientID\":\""
-		        + this.mClientId + "\"}";
-		this.mWebSocket.sendTextMessage(disconnectString);
+		// Object to send
+		JsonObject disconnectJson = new JsonObject();
+		disconnectJson.addProperty("channel", FayeClient.DISCONNECT_CHANNEL);
+		disconnectJson.addProperty("clientID", this.mClientId);
+
+		this.mWebSocket.sendTextMessage(disconnectJson.toString());
 		this.mClientId = null;
 	}
 
@@ -206,11 +212,15 @@ public class FayeClient {
 
 	protected void openFayeConnection() {
 		FayeConfigurations.tracker(this);
-		String connectString = "{\"channel\":\"" + FayeClient.CONNECT_CHANNEL
-		        + "\",\"clientId\":\"" + this.mClientId
-		        + "\",\"connectionType\":\"websocket\"}";
+
+		JsonObject connectJson = new JsonObject();
+		connectJson.addProperty("channel", FayeClient.CONNECT_CHANNEL);
+		connectJson.addProperty("clientId", this.mClientId);
+		connectJson.addProperty("connectionType", "websocket");
+
 		try {
-			mWebSocket.sendBinaryMessage(connectString.getBytes("UTF-8"));
+			mWebSocket.sendBinaryMessage(connectJson.toString().getBytes(
+			        "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			FayeConfigurations.logException(e);
 		}
@@ -236,10 +246,21 @@ public class FayeClient {
 
 				public void onOpen() {
 					FayeConfigurations.tracker(this);
-					String handshakeString = "{\"supportedConnectionTypes\":[\"websocket\"],\"minimumVersion\":\"1.0beta\",\"version\":\"1.0\",\"channel\":\""
-					        + FayeClient.HANDSHAKE_CHANNEL + "\"}";
+
+					JsonArray supportedConnectionTypes = new JsonArray();
+					supportedConnectionTypes
+					        .add(new JsonPrimitive("websocket"));
+
+					JsonObject handshakeJson = new JsonObject();
+					handshakeJson.add("supportedConnectionTypes",
+					        supportedConnectionTypes);
+					handshakeJson.addProperty("minimumVersion", "1.0beta");
+					handshakeJson.addProperty("version", "1.0");
+					handshakeJson.addProperty("channel",
+					        FayeClient.HANDSHAKE_CHANNEL);
+
 					try {
-						mWebSocket.sendBinaryMessage(handshakeString
+						mWebSocket.sendBinaryMessage(handshakeJson.toString()
 						        .getBytes("UTF-8"));
 					} catch (UnsupportedEncodingException e) {
 						FayeConfigurations.logException(e);
@@ -410,16 +431,19 @@ public class FayeClient {
 	 */
 	public void subscribe(String channel) {
 		FayeConfigurations.tracker(this, channel);
-		String subscribe = "{\"clientId\":\""
-		        + this.mClientId
-		        + "\",\"subscription\":\""
-		        + channel
-		        + "\",\"channel\":\"/meta/subscribe\",\"ext\":{\"authToken\":\""
-		        + this.mAuthToken + "\"}}";
-		FayeConfigurations.log("Faye is attempting to subscribe to channel \""
-		        + channel + "\"");
+
+		JsonObject ext = new JsonObject();
+		ext.addProperty("authToken", this.mAuthToken);
+
+		JsonObject subscribeJson = new JsonObject();
+		subscribeJson.addProperty("clientId", this.mClientId);
+		subscribeJson.addProperty("subscription", channel);
+		subscribeJson.addProperty("channel", FayeClient.SUBSCRIBE_CHANNEL);
+		subscribeJson.add("ext", ext);
+
 		try {
-			this.mWebSocket.sendBinaryMessage(subscribe.getBytes("UTF-8"));
+			this.mWebSocket.sendBinaryMessage(subscribeJson.toString()
+			        .getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			FayeConfigurations.logException(e);
 		}
@@ -433,14 +457,15 @@ public class FayeClient {
 	 */
 	public void unsubscribe(String channel) {
 		FayeConfigurations.tracker(this, channel);
-		String unsubscribe = "{\"clientId\":\"" + this.mClientId
-		        + "\",\"subscription\":\"" + channel
-		        + "\",\"channel\":\"/meta/unsubscribe\"}";
-		FayeConfigurations
-		        .log("Faye¤ is attempting to unsubscribe from channel \""
-		                + channel + "\"");
+
+		JsonObject unsubscribeJson = new JsonObject();
+		unsubscribeJson.addProperty("clientId", this.mClientId);
+		unsubscribeJson.addProperty("subscription", channel);
+		unsubscribeJson.addProperty("channel", FayeClient.UNSUBSCRIBE_CHANNEL);
+
 		try {
-			this.mWebSocket.sendBinaryMessage(unsubscribe.getBytes("UTF-8"));
+			this.mWebSocket.sendBinaryMessage(unsubscribeJson.toString()
+			        .getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			FayeConfigurations.logException(e);
 		}
@@ -454,8 +479,17 @@ public class FayeClient {
 	 */
 	public void sendTextMessage(String message) {
 		FayeConfigurations.tracker(this, message);
+
+		// TODO a easy method to send a mutiples channels
+		JsonObject messageJson = new JsonObject();
+		messageJson.addProperty("channel",
+		        FayeConfigurations.shared.FAYE_INITIAL_CHANNEL);
+		messageJson.addProperty("clientId", getClientId());
+		messageJson.addProperty("data", message);
+		messageJson.addProperty("id", new Random().nextInt());
+
 		if (isFayeConnected()) {
-			mWebSocket.sendTextMessage(message);
+			mWebSocket.sendTextMessage(messageJson.toString());
 		}
 	}
 
