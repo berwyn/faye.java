@@ -24,17 +24,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.SocketChannel;
 
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
+
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.util.Log;
 
 public class WebSocketConnection implements WebSocket {
-
-   private static final boolean DEBUG = true;
-   private static final String TAG = WebSocketConnection.class.getName();
-
+	
    protected Handler mMasterHandler;
 
    protected WebSocketReader mReader;
@@ -130,7 +128,7 @@ public class WebSocketConnection implements WebSocket {
 
 
    public WebSocketConnection() {
-      if (DEBUG) Log.d(TAG, "created");
+	   FayeConfigurations.tracker(this, "created");
    }
 
 
@@ -156,18 +154,18 @@ public class WebSocketConnection implements WebSocket {
 
    private void failConnection(int code, String reason) {
 
-      if (DEBUG) Log.d(TAG, "fail connection [code = " + code + ", reason = " + reason);
+	   FayeConfigurations.tracker(this, "fail connection [code = " + code + ", reason = " + reason);
 
       if (mReader != null) {
          mReader.quit();
          try {
             mReader.join();
          } catch (InterruptedException e) {
-            if (DEBUG) e.printStackTrace();
+        	 FayeConfigurations.logException(e);
          }
          //mReader = null;
       } else {
-         if (DEBUG) Log.d(TAG, "mReader already NULL");
+    	  FayeConfigurations.tracker(this, "mReader already NULL");
       }
 
       if (mWriter != null) {
@@ -176,36 +174,36 @@ public class WebSocketConnection implements WebSocket {
          try {
             mWriterThread.join();
          } catch (InterruptedException e) {
-            if (DEBUG) e.printStackTrace();
+        	 FayeConfigurations.logException(e);
          }
          //mWriterThread = null;
       } else {
-         if (DEBUG) Log.d(TAG, "mWriter already NULL");
+    	  FayeConfigurations.tracker(this, "mWriter already NULL");
       }
 
       if (mTransportChannel != null) {
          try {
             mTransportChannel.close();
          } catch (IOException e) {
-            if (DEBUG) e.printStackTrace();
+        	 FayeConfigurations.logException(e);
          }
          //mTransportChannel = null;
       } else {
-         if (DEBUG) Log.d(TAG, "mTransportChannel already NULL");
+    	  FayeConfigurations.tracker(this, "mTransportChannel already NULL");
       }
 
       if (mWsHandler != null) {
          try {
             mWsHandler.onClose(code, reason);
          } catch (Exception e) {
-            if (DEBUG) e.printStackTrace();
+        	 FayeConfigurations.logException(e);
          }
          //mWsHandler = null;
       } else {
-         if (DEBUG) Log.d(TAG, "mWsHandler already NULL");
+    	  FayeConfigurations.tracker(this, "mWsHandler already NULL");
       }
 
-      if (DEBUG) Log.d(TAG, "worker threads stopped");
+      FayeConfigurations.tracker(this, "worker threads stopped");
    }
 
 
@@ -291,7 +289,7 @@ public class WebSocketConnection implements WebSocket {
       if (mWriter != null) {
          mWriter.forward(new WebSocketMessage.Close(1000));
       } else {
-         if (DEBUG) Log.d(TAG, "could not send Close .. writer already NULL");
+    	  FayeConfigurations.tracker(this, "could not send Close .. writer already NULL");
       }
    }
 
@@ -312,7 +310,7 @@ public class WebSocketConnection implements WebSocket {
                if (mWsHandler != null) {
                   mWsHandler.onTextMessage(textMessage.mPayload);
                } else {
-                  if (DEBUG) Log.d(TAG, "could not call onTextMessage() .. handler already NULL");
+            	   FayeConfigurations.tracker(this, "could not call onTextMessage() .. handler already NULL");
                }
 
             } else if (msg.obj instanceof WebSocketMessage.RawTextMessage) {
@@ -322,7 +320,7 @@ public class WebSocketConnection implements WebSocket {
                if (mWsHandler != null) {
                   mWsHandler.onRawTextMessage(rawTextMessage.mPayload);
                } else {
-                  if (DEBUG) Log.d(TAG, "could not call onRawTextMessage() .. handler already NULL");
+            	   FayeConfigurations.tracker(this, "could not call onRawTextMessage() .. handler already NULL");
                }
 
             } else if (msg.obj instanceof WebSocketMessage.BinaryMessage) {
@@ -332,13 +330,13 @@ public class WebSocketConnection implements WebSocket {
                if (mWsHandler != null) {
                   mWsHandler.onBinaryMessage(binaryMessage.mPayload);
                } else {
-                  if (DEBUG) Log.d(TAG, "could not call onBinaryMessage() .. handler already NULL");
+            	   FayeConfigurations.tracker(this, "could not call onBinaryMessage() .. handler already NULL");
                }
 
             } else if (msg.obj instanceof WebSocketMessage.Ping) {
 
                WebSocketMessage.Ping ping = (WebSocketMessage.Ping) msg.obj;
-               if (DEBUG) Log.d(TAG, "WebSockets Ping received");
+               FayeConfigurations.tracker(this, "WebSockets Ping received");
 
                // reply with Pong
                WebSocketMessage.Pong pong = new WebSocketMessage.Pong();
@@ -350,13 +348,13 @@ public class WebSocketConnection implements WebSocket {
                @SuppressWarnings("unused")
                WebSocketMessage.Pong pong = (WebSocketMessage.Pong) msg.obj;
 
-               if (DEBUG) Log.d(TAG, "WebSockets Pong received");
+               FayeConfigurations.tracker(this, "WebSockets Pong received");
 
             } else if (msg.obj instanceof WebSocketMessage.Close) {
 
                WebSocketMessage.Close close = (WebSocketMessage.Close) msg.obj;
 
-               if (DEBUG) Log.d(TAG, "WebSockets Close received (" + close.mCode + " - " + close.mReason + ")");
+               FayeConfigurations.tracker(this, "WebSockets Close received (" + close.mCode + " - " + close.mReason + ")");
 
                mWriter.forward(new WebSocketMessage.Close(1000));
 
@@ -365,12 +363,12 @@ public class WebSocketConnection implements WebSocket {
                @SuppressWarnings("unused")
                WebSocketMessage.ServerHandshake serverHandshake = (WebSocketMessage.ServerHandshake) msg.obj;
 
-               if (DEBUG) Log.d(TAG, "opening handshake received");
+               FayeConfigurations.tracker(this, "opening handshake received");
 
                if (mWsHandler != null) {
                   mWsHandler.onOpen();
                } else {
-                  if (DEBUG) Log.d(TAG, "could not call onOpen() .. handler already NULL");
+            	   FayeConfigurations.tracker(this, "could not call onOpen() .. handler already NULL");
                }
 
             } else if (msg.obj instanceof WebSocketMessage.ConnectionLost) {
@@ -413,7 +411,7 @@ public class WebSocketConnection implements WebSocket {
       mWriterThread.start();
       mWriter = new WebSocketWriter(mWriterThread.getLooper(), mMasterHandler, mTransportChannel, mOptions);
 
-      if (DEBUG) Log.d(TAG, "WS writer created and started");
+      FayeConfigurations.tracker(this, "WS writer created and started");
    }
 
 
@@ -425,6 +423,6 @@ public class WebSocketConnection implements WebSocket {
       mReader = new WebSocketReader(mMasterHandler, mTransportChannel, mOptions, "WebSocketReader");
       mReader.start();
 
-      if (DEBUG) Log.d(TAG, "WS reader created and started");
+      FayeConfigurations.tracker(this, "WS reader created and started");
    }
 }

@@ -22,9 +22,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
+
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 /**
  * WebSocket reader, the receiving leg of a WebSockets connection.
@@ -34,9 +35,6 @@ import android.util.Log;
  * which gracefully shuts down the background receiver thread.
  */
 public class WebSocketReader extends Thread {
-
-   private static final boolean DEBUG = true;
-   private static final String TAG = WebSocketReader.class.getName();
 
    private final Handler mMaster;
    private final SocketChannel mSocket;
@@ -97,7 +95,7 @@ public class WebSocketReader extends Thread {
       mFrameHeader = null;
       mState = STATE_CONNECTING;
 
-      if (DEBUG) Log.d(TAG, "created");
+      FayeConfigurations.tracker(this, "created");
    }
 
 
@@ -108,7 +106,7 @@ public class WebSocketReader extends Thread {
 
       mStopped = true;
 
-      if (DEBUG) Log.d(TAG, "quit");
+      FayeConfigurations.tracker(this, "quit");
    }
 
 
@@ -564,7 +562,7 @@ public class WebSocketReader extends Thread {
    @Override
    public void run() {
 
-      if (DEBUG) Log.d(TAG, "running");
+	   FayeConfigurations.tracker(this, "running");
 
       try {
 
@@ -578,7 +576,7 @@ public class WebSocketReader extends Thread {
                }
             } else if (len < 0) {
 
-               if (DEBUG) Log.d(TAG, "run() : ConnectionLost");
+            	FayeConfigurations.tracker(this, "run() : ConnectionLost");
 
                notify(new WebSocketMessage.ConnectionLost());
                mStopped = true;
@@ -587,14 +585,14 @@ public class WebSocketReader extends Thread {
 
       } catch (WebSocketException e) {
 
-         if (DEBUG) Log.d(TAG, "run() : WebSocketException (" + e.toString() + ")");
+    	  FayeConfigurations.logException(e);
 
          // wrap the exception and notify master
          notify(new WebSocketMessage.ProtocolViolation(e));
 
       } catch (Exception e) {
 
-         if (DEBUG) Log.d(TAG, "run() : Exception (" + e.toString() + ")");
+    	  FayeConfigurations.logException(e);
 
          // wrap the exception and notify master
          notify(new WebSocketMessage.Error(e));
@@ -604,6 +602,6 @@ public class WebSocketReader extends Thread {
          mStopped = true;
       }
 
-      if (DEBUG) Log.d(TAG, "ended");
+      FayeConfigurations.tracker(this, "ended");
    }
 }

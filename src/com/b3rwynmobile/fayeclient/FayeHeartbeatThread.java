@@ -20,9 +20,11 @@
 
 package com.b3rwynmobile.fayeclient;
 
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
+
 public class FayeHeartbeatThread extends Thread {
 
-	private int			delay;
+	private int	       delay;
 	private FayeClient	client;
 
 	public FayeHeartbeatThread(FayeClient client) {
@@ -38,7 +40,7 @@ public class FayeHeartbeatThread extends Thread {
 				Thread.sleep(1000);
 				sleepCount++;
 			} catch (InterruptedException e) {
-				// Do nothing, server will send a timeout
+				FayeConfigurations.logException(e);
 			}
 		}
 		client.heartbeat();
