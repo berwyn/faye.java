@@ -383,21 +383,13 @@ public class FayeClient {
 	protected void processClose(int code) {
 		FayeConfigurations.tracker(this, code);
 		switch (code) {
+			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
+			case WebSocketHandler.CLOSE_CANNOT_CONNECT:
+			case WebSocketHandler.CLOSE_CONNECTION_LOST:
 			case WebSocketHandler.CLOSE_INTERNAL_ERROR:
 				FayeClient.this.mWebSocket = new WebSocketConnection();
 				connect();
 				break;
-			case WebSocketHandler.CLOSE_PROTOCOL_ERROR:
-			case WebSocketHandler.CLOSE_CANNOT_CONNECT:
-			case WebSocketHandler.CLOSE_CONNECTION_LOST:
-				while (!FayeClient.this.mWebSocket.isConnected()) {
-					try {
-						connect();
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						FayeConfigurations.logException(e);
-					}
-				}
 			case WebSocketHandler.CLOSE_NORMAL:
 				break;
 		}
