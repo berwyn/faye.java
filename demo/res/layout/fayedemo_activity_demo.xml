@@ -1,58 +1,54 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="10dp" >
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/message_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp"
-        android:weightSum="1.0" >
+        android:layout_below="@+id/connect_switch"
+        android:layout_gravity="center_vertical"
+        android:layout_weight=".6"
+        android:ems="10"
+        android:hint="Send a message" />
 
-        <EditText
-            android:id="@+id/message_box"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/connect_switch"
-            android:layout_gravity="center_vertical"
-            android:layout_weight=".6"
-            android:ems="10"
-            android:hint="Send a message" />
-
-        <ToggleButton
-            android:id="@+id/connect_toggle_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight=".4"
-            android:text="Connected"
-            android:textOff="Disconnected"
-            android:textOn="Connected" />
-    </LinearLayout>
-
-    <LinearLayout
+    <ToggleButton
+        android:id="@+id/connect_toggle_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/message_box"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp"
-        android:weightSum="1.0" >
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:text="Connected"
+        android:textOff="Disconnected"
+        android:textOn="Connected" />
 
-        <Button
-            android:id="@+id/send_text_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Send Text" />
+    <Button
+        android:id="@+id/send_text_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/connect_toggle_button"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
+        android:text="Send Text" />
 
-        <Button
-            android:id="@+id/send_raw_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".5"
-            android:text="Send Raw Text" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/send_raw_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/send_text_button"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp"
+        android:text="Send Raw Text" />
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar_wait_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/connect_toggle_button"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
