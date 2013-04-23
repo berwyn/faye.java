@@ -15,4 +15,12 @@ public class FayeConfigurations {
 	public boolean logEnabled = false;
 	public String logTag = "FayeAndroid";
 
+	public static void Log(Object... args) {
+		if (shared.logEnabled) {
+			String message = new String();
+			for (Object o : args)
+				message += o + " - ";
+			android.util.Log.d(shared.logTag, message);
+		}
+	}
 }
