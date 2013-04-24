@@ -7,13 +7,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 import android.widget.ToggleButton;
+
 import com.b3rwynmobile.fayeclient.FayeBinder;
 import com.b3rwynmobile.fayeclient.FayeClient;
 import com.b3rwynmobile.fayeclient.FayeListener;
@@ -21,125 +20,165 @@ import com.b3rwynmobile.fayeclient.FayeService;
 import com.b3rwynmobile.fayeclient.models.FayeMessage;
 
 public class DemoActivity extends Activity implements FayeListener,
-        ServiceConnection {
+	ServiceConnection {
 
-	private boolean	     mFayeConnected;
-	private FayeBinder	 mBinder;
-	private EditText	 mTextBox;
-	private ToggleButton	mConnectToggle;
-	private Button	     mSendTextButton;
-	private Button	     mSendRawButton;
+    /**
+     * a easy form to controller the connection status
+     */
+    private enum FayeConnectionStatus {
+	FAYE_CS_CONNECTED, FAYE_CS_DESCONNECTED, FAYE_CS_CONNECTING, FAYE_CS_DESCONNECTING;
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.fayedemo_activity_demo);
+    /*
+     * Instance variables
+     */
 
-		mTextBox = (EditText) findViewById(R.id.message_box);
-		mConnectToggle = (ToggleButton) findViewById(R.id.connect_toggle_button);
-		mSendTextButton = (Button) findViewById(R.id.send_text_button);
-		mSendRawButton = (Button) findViewById(R.id.send_raw_button);
+    private FayeConnectionStatus mFayeConnected = FayeConnectionStatus.FAYE_CS_DESCONNECTED;
+    private FayeBinder mBinder;
+    private EditText mTextBox;
+    private ToggleButton mConnectToggle;
+    private Button mSendTextButton;
+    private Button mSendRawButton;
+    private ProgressBar mProgressBar;
 
-		mConnectToggle.setOnClickListener(new OnClickListener() {
+    /*
+     * life cycle
+     */
 
-			public void onClick(View v) {
-				if (!mFayeConnected) {
-					connect();
-				} else {
-					disconnect();
-				}
-			}
-		});
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+	super.onCreate(savedInstanceState);
+	setContentView(R.layout.fayedemo_activity_demo);
 
-		mSendTextButton.setOnClickListener(new OnClickListener() {
+	mTextBox = (EditText) findViewById(R.id.message_box);
+	mConnectToggle = (ToggleButton) findViewById(R.id.connect_toggle_button);
+	mSendTextButton = (Button) findViewById(R.id.send_text_button);
+	mSendRawButton = (Button) findViewById(R.id.send_raw_button);
+	mProgressBar = (ProgressBar) findViewById(R.id.progress_bar_wait_connection);
+    }
 
-			public void onClick(View v) {
-				sendMessage(mTextBox.getText().toString());
-			}
-		});
+    /*
+     * onClicks handlers
+     */
 
-		mSendRawButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				sendRawMessage(mTextBox.getText().toString());
-			}
-		});
+    public void onToggleButtonClick(View v) {
+	switch (mFayeConnected) {
+	case FAYE_CS_DESCONNECTED:
+	    connect();
+	    break;
+	case FAYE_CS_CONNECTED:
+	    disconnect();
+	    break;
+	default:
+	    MyFayeConfigurations.log("wait faye connection proccess");
 	}
+    }
 
-	public void connectedToServer(FayeClient faye) {
-		mFayeConnected = true;
-		mConnectToggle.setChecked(mFayeConnected);
-	}
+    public void onTextButtonClick(View v) {
+	if (mFayeConnected == FayeConnectionStatus.FAYE_CS_CONNECTED)
+	    mBinder.getFayeClient().sendTextMessage(
+		    mTextBox.getText().toString());
+	else
+	    MyFayeConfigurations.log("Connect Faye before to send a message");
+    }
 
-	public void disconnectedFromServer(FayeClient faye) {
-		mFayeConnected = false;
-		mConnectToggle.setChecked(mFayeConnected);
-	}
+    public void onRawButtonClick(View v) {
+	if (mFayeConnected == FayeConnectionStatus.FAYE_CS_CONNECTED)
+	    mBinder.getFayeClient().sendRawTextMessage(
+		    mTextBox.getText().toString());
+	else
+	    MyFayeConfigurations.log("Connect Faye before to send a message");
+    }
 
-	public void messageReceived(FayeClient faye, FayeMessage message) {
-		Toast.makeText(this, "Faye received message: "
-		        + message.getData().toString(), Toast.LENGTH_LONG).show();
-	}
+    public void subscribe(String channel) {
+	if (mBinder != null)
+	    mBinder.getFayeClient().subscribe(channel);
+	else
+	    MyFayeConfigurations.log("Connect Faye before subscribe a channel");
+    }
 
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		mBinder = (FayeBinder) service;
-		mBinder.getFayeClient().setFayeListener(this);
-		mFayeConnected = mBinder.getFayeClient().isFayeConnected();
-		if (!mFayeConnected) connect();
-	}
+    /*
+     * layout behavior methods
+     */
 
-	public void onServiceDisconnected(ComponentName name) {
-		mBinder = null;
-		mFayeConnected = false;
+    public void setmFayeConnected(FayeConnectionStatus mFayeConnected) {
+	switch (mFayeConnected) {
+	case FAYE_CS_DESCONNECTED:
+	case FAYE_CS_CONNECTED:
+	    mConnectToggle.setVisibility(View.VISIBLE);
+	    mProgressBar.setVisibility(View.INVISIBLE);
+	    mSendRawButton.setEnabled(true);
+	    mSendTextButton.setEnabled(true);
+	    break;
+	default:
+	    mConnectToggle.setVisibility(View.INVISIBLE);
+	    mProgressBar.setVisibility(View.VISIBLE);
+	    mSendRawButton.setEnabled(false);
+	    mSendTextButton.setEnabled(false);
 	}
+	this.mFayeConnected = mFayeConnected;
+    }
 
-	public void subscribe(String channel) {
-		if (mBinder != null) {
-			mBinder.getFayeClient().subscribe(channel);
-		} else {
-			Toast.makeText(this, "Please connect Faye first", Toast.LENGTH_LONG).show();
-		}
-	}
+    /*
+     * custom methods
+     */
 
-	public void sendMessage(String message) {
-		if (mFayeConnected) {
-			mBinder.getFayeClient().sendTextMessage(message);
-		} else {
-			Toast.makeText(this,
-			        "Please connect Faye before trying to send a message",
-			        Toast.LENGTH_LONG).show();
-		}
+    public void connect() {
+	if (mBinder == null) {
+	    bindFayeService();
+	} else if (mFayeConnected == FayeConnectionStatus.FAYE_CS_DESCONNECTED) {
+	    setmFayeConnected(FayeConnectionStatus.FAYE_CS_CONNECTING);
+	    mBinder.getFayeService().startFaye();
 	}
+    }
 
-	public void sendRawMessage(String message) {
-		if (mFayeConnected) {
-			mBinder.getFayeClient().sendRawTextMessage(message);
-		} else {
-			Toast.makeText(this,
-			        "Please connect Faye before attempting to send a message",
-			        Toast.LENGTH_LONG).show();
-		}
+    public void disconnect() {
+	if (mBinder == null) {
+	    bindFayeService();
+	} else if (mFayeConnected == FayeConnectionStatus.FAYE_CS_CONNECTED) {
+	    setmFayeConnected(FayeConnectionStatus.FAYE_CS_DESCONNECTING);
+	    mBinder.getFayeService().stopFaye();
 	}
+    }
 
-	private void bindFayeService() {
-		Intent intent = new Intent();
-		intent.setClass(this, FayeService.class);
-		bindService(intent, this, Context.BIND_AUTO_CREATE);
-	}
+    private void bindFayeService() {
+	Intent intent = new Intent();
+	intent.setClass(this, FayeService.class);
+	bindService(intent, this, Context.BIND_AUTO_CREATE);
+    }
 
-	public void connect() {
-		if (mBinder == null) {
-			bindFayeService();
-		} else {
-			if (!mFayeConnected) mBinder.getFayeService().startFaye();
-		}
-	}
+    /*
+     * Faye Listener
+     */
 
-	public void disconnect() {
-		if (mBinder == null) {
-			bindFayeService();
-		} else {
-			if (mFayeConnected) mBinder.getFayeService().stopFaye();
-		}
-	}
+    public void connectedToServer(FayeClient faye) {
+	setmFayeConnected(FayeConnectionStatus.FAYE_CS_CONNECTED);
+    }
+
+    public void disconnectedFromServer(FayeClient faye) {
+	setmFayeConnected(FayeConnectionStatus.FAYE_CS_DESCONNECTED);
+    }
+
+    public void messageReceived(FayeClient faye, FayeMessage message) {
+	MyFayeConfigurations.log("Faye received message", message);
+    }
+
+    /*
+     * Service Connection Listener
+     */
+
+    public void onServiceConnected(ComponentName name, IBinder service) {
+	mBinder = (FayeBinder) service;
+	mBinder.getFayeClient().setFayeListener(this);
+	if (mBinder.getFayeClient().isFayeConnected())
+	    setmFayeConnected(FayeConnectionStatus.FAYE_CS_CONNECTED);
+	else
+	    connect();
+    }
+
+    public void onServiceDisconnected(ComponentName name) {
+	mBinder = null;
+	setmFayeConnected(FayeConnectionStatus.FAYE_CS_DESCONNECTED);
+    }
+
 }
