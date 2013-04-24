@@ -66,12 +66,6 @@ public class DemoActivity extends Activity implements FayeListener,
 		});
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.fayedemo_activity_demo, menu);
-		return true;
-	}
-
 	public void connectedToServer(FayeClient faye) {
 		mFayeConnected = true;
 		mConnectToggle.setChecked(mFayeConnected);
