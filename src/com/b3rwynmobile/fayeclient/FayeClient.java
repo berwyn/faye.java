@@ -302,7 +302,8 @@ public class FayeClient {
 		} else if (channel.equals(FayeClient.CONNECT_CHANNEL)) {
 			if (message.isSuccessful()) {
 				mFayeConnected = true;
-				mFayeListener.connectedToServer(this);
+				// auto-subscribe channel to get messages
+				subscribe(FayeConfigurations.shared.FAYE_INITIAL_CHANNEL);
 				scheduleHeartbeat(message.getAdvice().getInterval());
 				FayeConfigurations.log("Faye connected");
 			} else {
@@ -357,8 +358,6 @@ public class FayeClient {
 			mFayeListener.messageReceived(this, message);
 			FayeConfigurations.log("Faye unsubscribed from channel",
 			        message.getSubscription());
-		} else if (this.mActiveSubchannels.contains(channel)) {
-			mFayeListener.messageReceived(this, message);
 		} else {
 			FayeConfigurations
 			        .log("Faye recieved a message with no subscription for channel ",
@@ -497,7 +496,6 @@ public class FayeClient {
 			try {
 				mWebSocket.sendRawTextMessage(message.getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				FayeConfigurations.logException(e);
 			}
 		}
