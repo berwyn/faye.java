@@ -44,7 +44,7 @@ public class FayeConfigurations {
 				i++;
 			}
 			android.util.Log.d(shared.logMethodTrackerTag, "Method: "
-			        + Thread.currentThread().getStackTrace()[4] + " instance: "
+			        + Thread.currentThread().getStackTrace()[3] + " instance: "
 			        + (instance == null ? "Null" : instance) + " params: " + s);
 		}
 	}
