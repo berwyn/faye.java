@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.b3rwynmobile.fayeclient.FayeBinder;
@@ -41,6 +42,7 @@ public class DemoActivity extends Activity implements FayeListener,
     private Button mSendTextButton;
     private Button mSendRawButton;
     private ProgressBar mProgressBar;
+    private TextView mDataReceivedTextView;
 
     /*
      * life cycle
@@ -59,6 +61,7 @@ public class DemoActivity extends Activity implements FayeListener,
 	mSendTextButton = (Button) findViewById(R.id.send_text_button);
 	mSendRawButton = (Button) findViewById(R.id.send_raw_button);
 	mProgressBar = (ProgressBar) findViewById(R.id.progress_bar_wait_connection);
+	mDataReceivedTextView = (TextView) findViewById(R.id.txt_messages_receiveds);
     }
 
     /*
@@ -94,11 +97,8 @@ public class DemoActivity extends Activity implements FayeListener,
 	    MyFayeConfigurations.log("Connect Faye before to send a message");
     }
 
-    public void subscribe(String channel) {
-	if (mBinder != null)
-	    mBinder.getFayeClient().subscribe(channel);
-	else
-	    MyFayeConfigurations.log("Connect Faye before subscribe a channel");
+    public void onClearButtonClick(View v) {
+	mDataReceivedTextView.setText("");
     }
 
     /*
@@ -151,6 +151,19 @@ public class DemoActivity extends Activity implements FayeListener,
 	bindService(intent, this, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * example to subscribe a channel
+     * 
+     * @param channel
+     *            example: /channel_to_connect
+     */
+    public void subscribe(String channel) {
+	if (mBinder != null)
+	    mBinder.getFayeClient().subscribe(channel);
+	else
+	    MyFayeConfigurations.log("Connect Faye before subscribe a channel");
+    }
+
     /*
      * Faye Listener
      */
@@ -165,6 +178,11 @@ public class DemoActivity extends Activity implements FayeListener,
 
     public void messageReceived(FayeClient faye, FayeMessage message) {
 	MyFayeConfigurations.log("Faye received message", message);
+
+	// Example of get message
+	if (message != null && message.getData() != null)
+	    mDataReceivedTextView.setText(mDataReceivedTextView.getText()
+		    + "\n" + message.getData().toString());
     }
 
     /*
