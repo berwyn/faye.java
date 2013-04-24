@@ -17,6 +17,7 @@ import com.b3rwynmobile.fayeclient.FayeBinder;
 import com.b3rwynmobile.fayeclient.FayeClient;
 import com.b3rwynmobile.fayeclient.FayeListener;
 import com.b3rwynmobile.fayeclient.FayeService;
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
 import com.b3rwynmobile.fayeclient.models.FayeMessage;
 
 public class DemoActivity extends Activity implements FayeListener,
@@ -49,6 +50,9 @@ public class DemoActivity extends Activity implements FayeListener,
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.fayedemo_activity_demo);
+
+	// You need set the configurations before use the faye client
+	FayeConfigurations.shared = new MyFayeConfigurations();
 
 	mTextBox = (EditText) findViewById(R.id.message_box);
 	mConnectToggle = (ToggleButton) findViewById(R.id.connect_toggle_button);
