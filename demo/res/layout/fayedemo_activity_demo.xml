@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/connect_switch"
         android:layout_gravity="center_vertical"
-        android:layout_weight=".6"
         android:ems="10"
         android:hint="Send a message" />
 
@@ -32,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/connect_toggle_button"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:onClick="onTextButtonClick"
         android:paddingTop="10dp"
         android:text="Send Text" />
@@ -54,7 +53,6 @@
         android:layout_alignBottom="@+id/connect_toggle_button"
         android:layout_alignTop="@+id/connect_toggle_button"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="2dp"
         android:visibility="invisible" />
 
 </RelativeLayout>
