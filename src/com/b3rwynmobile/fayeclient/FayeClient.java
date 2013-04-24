@@ -421,6 +421,8 @@ public class FayeClient {
 	 *            The channel to subscribe to
 	 */
 	public void subscribe(String channel) {
+		if (this.mWebSocket == null) return;
+
 		FayeConfigurations.tracker(this, channel);
 
 		JsonObject ext = new JsonObject();
