@@ -123,21 +123,23 @@ public class FayeClient {
 	}
 
 	protected void closeFayeConnection() {
-		FayeConfigurations.tracker(this);
-		if (this.mClientId == null) { return; }
+		FayeConfigurations.tracker(this, this.mClientId);
+		if (this.mClientId == null) return;
 
 		// Object to send
 		JsonObject disconnectJson = new JsonObject();
 		disconnectJson.addProperty("channel", FayeClient.DISCONNECT_CHANNEL);
-		disconnectJson.addProperty("clientID", this.mClientId);
+		disconnectJson.addProperty("clientId", this.mClientId);
 
 		this.mWebSocket.sendTextMessage(disconnectJson.toString());
 		this.mClientId = null;
 	}
 
 	protected void closeSocketConnection() {
-		FayeConfigurations.tracker(this);
+		FayeConfigurations.tracker(this, this.mWebSocket);
 		if (this.mWebSocket != null) {
+			FayeConfigurations.log("mWebSocket isConnected",
+			        this.mWebSocket.isConnected());
 			if (this.mWebSocket.isConnected()) {
 				this.mWebSocket.disconnect();
 			}
