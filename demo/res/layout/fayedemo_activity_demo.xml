@@ -22,6 +22,7 @@
         android:layout_below="@+id/message_box"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="10dp"
+        android:onClick="onToggleButtonClick"
         android:text="Connected"
         android:textOff="Disconnected"
         android:textOn="Connected" />
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/connect_toggle_button"
         android:layout_marginTop="10dp"
+        android:onClick="onTextButtonClick"
         android:paddingTop="10dp"
         android:text="Send Text" />
 
@@ -41,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/send_text_button"
         android:layout_marginTop="10dp"
+        android:onClick="onRawButtonClick"
         android:paddingTop="10dp"
         android:text="Send Raw Text" />
 
@@ -48,7 +51,10 @@
         android:id="@+id/progress_bar_wait_connection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/connect_toggle_button"
         android:layout_alignTop="@+id/connect_toggle_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="2dp"
+        android:visibility="invisible" />
 
 </RelativeLayout>
