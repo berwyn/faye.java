@@ -20,10 +20,10 @@
 
 package com.b3rwynmobile.fayeclient.models;
 
-public class FayeAdvice {
+public class FayeAdvice extends FayeModelAbstract {
 
 	private String	reconnect;
-	private int		interval;
+	private int	   interval;
 	private long	timeout;
 
 	public String getReconnect() {

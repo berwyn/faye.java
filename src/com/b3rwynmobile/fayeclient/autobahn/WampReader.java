@@ -29,19 +29,16 @@ import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import android.os.Handler;
+
 import com.b3rwynmobile.fayeclient.autobahn.WampConnection.CallMeta;
 import com.b3rwynmobile.fayeclient.autobahn.WampConnection.SubMeta;
-
-import android.os.Handler;
-import android.util.Log;
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
 
 /**
  * Autobahn WAMP reader, the receiving leg of a WAMP connection.
  */
 public class WampReader extends WebSocketReader {
-
-   private static final boolean DEBUG = true;
-   private static final String TAG = WampReader.class.getName();
 
    /// Jackson JSON-to-object mapper.
    private final ObjectMapper mJsonMapper;
@@ -81,7 +78,7 @@ public class WampReader extends WebSocketReader {
       mJsonMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       mJsonFactory = mJsonMapper.getJsonFactory();
 
-      if (DEBUG) Log.d(TAG, "created");
+      FayeConfigurations.tracker(this, "created");
    }
 
    protected void onTextMessage(String payload) {
@@ -138,7 +135,7 @@ public class WampReader extends WebSocketReader {
 
                   } else {
 
-                     if (DEBUG) Log.d(TAG, "WAMP RPC success return for unknown call ID received");
+                	  FayeConfigurations.tracker(this, "WAMP RPC success return for unknown call ID received");
                   }
 
                } else if (msgType == WampMessage.MESSAGE_TYPE_CALL_ERROR) {
@@ -161,7 +158,7 @@ public class WampReader extends WebSocketReader {
 
                   } else {
 
-                     if (DEBUG) Log.d(TAG, "WAMP RPC error return for unknown call ID received");
+                	  FayeConfigurations.tracker(this, "WAMP RPC error return for unknown call ID received");
                   }
 
                } else if (msgType == WampMessage.MESSAGE_TYPE_EVENT) {
@@ -187,7 +184,7 @@ public class WampReader extends WebSocketReader {
 
                   } else {
 
-                     if (DEBUG) Log.d(TAG, "WAMP event for not-subscribed topic received");
+                	  FayeConfigurations.tracker(this, "WAMP event for not-subscribed topic received");
                   }
 
                } else if (msgType == WampMessage.MESSAGE_TYPE_PREFIX) {
@@ -221,12 +218,12 @@ public class WampReader extends WebSocketReader {
                } else {
 
                   // FIXME: invalid WAMP message
-                  if (DEBUG) Log.d(TAG, "invalid WAMP message: unrecognized message type");
+            	   FayeConfigurations.tracker(this, "invalid WAMP message: unrecognized message type");
 
                }
             } else {
 
-               if (DEBUG) Log.d(TAG, "invalid WAMP message: missing message type or message type not an integer");
+            	FayeConfigurations.tracker(this, "invalid WAMP message: missing message type or message type not an integer");
             }
 
             if (parser.nextToken() == JsonToken.END_ARRAY) {
@@ -235,23 +232,23 @@ public class WampReader extends WebSocketReader {
 
             } else {
 
-               if (DEBUG) Log.d(TAG, "invalid WAMP message: missing array close or invalid additional args");
+            	FayeConfigurations.tracker(this, "invalid WAMP message: missing array close or invalid additional args");
             }
 
          } else {
 
-            if (DEBUG) Log.d(TAG, "invalid WAMP message: not an array");
+        	 FayeConfigurations.tracker(this, "invalid WAMP message: not an array");
          }
          parser.close();
 
 
       } catch (JsonParseException e) {
 
-         if (DEBUG) e.printStackTrace();
+    	  FayeConfigurations.logException(e);
 
       } catch (IOException e) {
 
-         if (DEBUG) e.printStackTrace();
+    	  FayeConfigurations.logException(e);
 
       }
    }

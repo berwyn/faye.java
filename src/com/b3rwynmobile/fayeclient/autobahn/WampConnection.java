@@ -23,14 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.jackson.type.TypeReference;
 
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
+
 import android.os.HandlerThread;
-import android.util.Log;
 
 public class WampConnection extends WebSocketConnection implements Wamp {
-
-   private static final boolean DEBUG = true;
-   private static final String TAG = WampConnection.class.getName();
-
 
    /// The message handler of the background writer.
    protected WampWriter mWriterHandler;
@@ -118,7 +115,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
       mWriterThread.start();
       mWriter = new WampWriter(mWriterThread.getLooper(), mMasterHandler, mTransportChannel, mOptions);
 
-      if (DEBUG) Log.d(TAG, "writer created and started");
+      FayeConfigurations.tracker(this, "writer created and started");
    }
 
 
@@ -129,7 +126,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
       mReader = new WampReader(mCalls, mSubs, mMasterHandler, mTransportChannel, mOptions, "AutobahnReader");
       mReader.start();
 
-      if (DEBUG) Log.d(TAG, "reader created and started");
+      FayeConfigurations.tracker(this, "reader created and started");
    }
 
 
@@ -193,7 +190,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
                if (mSessionHandler != null) {
                   mSessionHandler.onOpen();
                } else {
-                  if (DEBUG) Log.d(TAG, "could not call onOpen() .. handler already NULL");
+            	   FayeConfigurations.tracker(this, "could not call onOpen() .. handler already NULL");
                }
             }
 
@@ -202,7 +199,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
                if (mSessionHandler != null) {
                   mSessionHandler.onClose(code, reason);
                } else {
-                  if (DEBUG) Log.d(TAG, "could not call onClose() .. handler already NULL");
+            	   FayeConfigurations.tracker(this, "could not call onClose() .. handler already NULL");
                }
             }
 
@@ -213,7 +210,7 @@ public class WampConnection extends WebSocketConnection implements Wamp {
          if (mSessionHandler != null) {
             mSessionHandler.onClose(WebSocketConnectionHandler.CLOSE_CANNOT_CONNECT, "cannot connect (" + e.toString() + ")");
          } else {
-            if (DEBUG) Log.d(TAG, "could not call onClose() .. handler already NULL");
+        	 FayeConfigurations.tracker(this, "could not call onClose() .. handler already NULL");
          }
       }
 
@@ -263,11 +260,11 @@ public class WampConnection extends WebSocketConnection implements Wamp {
          WampMessage.Welcome welcome = (WampMessage.Welcome) message;
 
          // FIXME: safe session ID / fire session opened hook
-         if (DEBUG) Log.d(TAG, "WAMP session " + welcome.mSessionId + " established (protocol version " + welcome.mProtocolVersion + ", server " + welcome.mServerIdent + ")");
+         FayeConfigurations.tracker(this, "WAMP session " + welcome.mSessionId + " established (protocol version " + welcome.mProtocolVersion + ", server " + welcome.mServerIdent + ")");
 
       } else {
 
-         if (DEBUG) Log.d(TAG, "unknown WAMP message in AutobahnConnection.processAppMessage");
+    	  FayeConfigurations.tracker(this, "unknown WAMP message in AutobahnConnection.processAppMessage");
       }
    }
 

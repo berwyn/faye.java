@@ -22,27 +22,27 @@ package com.b3rwynmobile.fayeclient.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class FayeMessage {
+public class FayeMessage extends FayeModelAbstract {
 
 	// General
-	private String		channel;
+	private String	   channel;
 
 	// Handshake
-	private String		version;
+	private String	   version;
 	private String[]	supportedConnectionTypes;
 	private FayeAdvice	advice;
 
 	// Event
-	private Object		data;
+	private Object	   data;
 
 	// (Un-)Subscribe
-	private String		subscription;
-	private String		error;
+	private String	   subscription;
+	private String	   error;
 
 	// Handshake + Subscribe
-	private boolean		successful;
+	private boolean	   successful;
 	@SerializedName("clientId")
-	private String		clientId;
+	private String	   clientId;
 
 	public String getChannel() {
 		return channel;

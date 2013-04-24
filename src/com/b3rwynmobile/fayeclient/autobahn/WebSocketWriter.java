@@ -22,11 +22,12 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.Random;
 
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Base64;
-import android.util.Log;
 
 /**
  * WebSocket writer, the sending leg of a WebSockets connection.
@@ -37,10 +38,7 @@ import android.util.Log;
  * underlying TCP socket.
  */
 public class WebSocketWriter extends Handler {
-
-   private static final boolean DEBUG = true;
-   private static final String TAG = WebSocketWriter.class.getName();
-
+	
    /// Random number generator for handshake key and frame mask generation.
    private final Random mRng = new Random();
 
@@ -79,7 +77,7 @@ public class WebSocketWriter extends Handler {
       mOptions = options;
       mBuffer = new ByteBufferOutputStream(options.getMaxFramePayloadSize() + 14, 4*64*1024);
 
-      if (DEBUG) Log.d(TAG, "created");
+      FayeConfigurations.tracker(this, "created");
    }
 
 
@@ -392,7 +390,7 @@ public class WebSocketWriter extends Handler {
 
       } catch (Exception e) {
 
-         if (DEBUG) e.printStackTrace();
+    	  FayeConfigurations.logException(e);
 
          // wrap the exception and notify master
          notify(new WebSocketMessage.Error(e));
@@ -442,7 +440,7 @@ public class WebSocketWriter extends Handler {
 
          mLooper.quit();
 
-         if  (DEBUG) Log.d(TAG, "ended");
+         FayeConfigurations.tracker(this, "ended");
 
          return;
 

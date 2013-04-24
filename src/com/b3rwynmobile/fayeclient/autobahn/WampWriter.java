@@ -27,9 +27,10 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.MappingJsonFactory;
 
+import com.b3rwynmobile.fayeclient.config.FayeConfigurations;
+
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 /**
  * Autobahn WAMP writer, the transmitting leg of a WAMP connection.
@@ -38,9 +39,6 @@ import android.util.Log;
  * serialized to JSON, and then sent via WebSockets.
  */
 public class WampWriter extends WebSocketWriter {
-
-   private static final boolean DEBUG = true;
-   private static final String TAG = WampWriter.class.getName();
 
    /**
     * This is the Jackson JSON factory we use to create JSON generators.
@@ -68,7 +66,7 @@ public class WampWriter extends WebSocketWriter {
       mJsonFactory = new MappingJsonFactory();
       mPayload = new NoCopyByteArrayOutputStream();
 
-      if (DEBUG) Log.d(TAG, "created");
+      FayeConfigurations.tracker(this, "created");
    }
 
    /**

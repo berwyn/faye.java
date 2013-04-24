@@ -20,12 +20,12 @@
 
 package com.b3rwynmobile.fayeclient.models;
 
-public class FayeData {
+public class FayeData extends FayeModelAbstract {
 
-	private String		timestamp;
-	private String		content;
+	private String	  timestamp;
+	private String	  content;
 	private FayeTopic	topic;
-	private String		id;
+	private String	  id;
 
 	public String getTimestamp() {
 		return timestamp;
