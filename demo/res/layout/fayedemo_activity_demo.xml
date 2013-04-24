@@ -23,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:onClick="onToggleButtonClick"
         android:text="Connected"
-        android:textOff="Disconnected"
+        android:textOff="Connect to faye"
         android:textOn="Connected" />
 
     <Button
@@ -54,5 +54,25 @@
         android:layout_alignTop="@+id/connect_toggle_button"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/txt_messages_receiveds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/send_raw_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/send_raw_button"
+        android:layout_below="@+id/send_raw_button"
+        android:layout_marginTop="10dp"
+        android:text="" />
+
+    <Button
+        android:id="@+id/btn_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/txt_messages_receiveds"
+        android:layout_alignTop="@+id/txt_messages_receiveds"
+        android:onClick="onClearButtonClick"
+        android:text="clear" />
 
 </RelativeLayout>
