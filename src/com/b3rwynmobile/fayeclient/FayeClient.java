@@ -388,8 +388,7 @@ public class FayeClient {
 			case WebSocketHandler.CLOSE_CANNOT_CONNECT:
 			case WebSocketHandler.CLOSE_CONNECTION_LOST:
 			case WebSocketHandler.CLOSE_INTERNAL_ERROR:
-				FayeClient.this.mWebSocket = new WebSocketConnection();
-				connect();
+				mFayeListener.disconnectedFromServer(this);
 				break;
 			case WebSocketHandler.CLOSE_NORMAL:
 				break;

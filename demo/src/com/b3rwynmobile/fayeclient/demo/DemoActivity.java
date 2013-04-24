@@ -113,6 +113,8 @@ public class DemoActivity extends Activity implements FayeListener,
 	    mProgressBar.setVisibility(View.INVISIBLE);
 	    mSendRawButton.setEnabled(true);
 	    mSendTextButton.setEnabled(true);
+	    mConnectToggle
+		    .setChecked(mFayeConnected == FayeConnectionStatus.FAYE_CS_CONNECTED);
 	    break;
 	default:
 	    mConnectToggle.setVisibility(View.INVISIBLE);
