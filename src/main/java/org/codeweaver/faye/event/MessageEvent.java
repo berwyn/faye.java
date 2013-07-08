@@ -9,11 +9,11 @@ import com.google.gson.JsonObject;
  * Time: 01:48
  * To change this template use File | Settings | File Templates.
  */
-public class FayeMessageEvent {
+public class MessageEvent {
 
     private final JsonObject message;
 
-    public FayeMessageEvent(final JsonObject message) {
+    public MessageEvent(final JsonObject message) {
         this.message = message;
     }
 

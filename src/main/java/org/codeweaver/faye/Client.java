@@ -9,9 +9,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.codeweaver.faye.event.FayeConnectedEvent;
-import org.codeweaver.faye.event.FayeMessageEvent;
-import org.codeweaver.faye.event.FayeSubscribedEvent;
+import org.codeweaver.faye.event.*;
+import org.codeweaver.faye.model.Advice;
 import org.codeweaver.faye.model.Message;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -102,6 +101,8 @@ public class Client extends WebSocketClient {
 		return this.clientID;
 	}
 
+	// region >> METHODS >> MESSAGE GENERATORS
+
 	private Message generateHandshakeMessage() {
 		Message payload = new Message();
 		payload.setChannel(config.HANDSHAKE_CHANNEL);
@@ -133,60 +134,90 @@ public class Client extends WebSocketClient {
 		return payload;
 	}
 
+	// endregion
+
+	// region >> METHODS >> SOCKET OPERATIONS
+
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
-		// FIXME Kickoff handshake and set status to connecting
+		// FIXME Kickoff Faye handshake and set status to connecting
 	}
 
 	@Override
 	public void onMessage(String message) {
 		Message[] messages = gson.fromJson(message, Message[].class);
-		for (Message _m : messages) {
-			if (!_m.isSuccessful()) {
-				handleFailedMessage(_m);
+		for (Message msg : messages) {
+			if (!msg.isSuccessful()) {
+				handleFailedMessage(msg);
+				continue;
 			}
-			if (_m.getChannel().equals(config.HANDSHAKE_CHANNEL)) {
-				this.clientID = _m.getClientId();
-				// FIXME Add handling for Advices
-			} else if (_m.getChannel().equals(config.CONNECT_CHANNEL)) {
+
+			if (msg.getAdvice() != null) {
+				handleAdvice(msg.getAdvice());
+			}
+
+			if (msg.getChannel().equals(config.HANDSHAKE_CHANNEL)) {
+				this.clientID = msg.getClientId();
+				// FIXME Start connection procedure
+			} else if (msg.getChannel().equals(config.CONNECT_CHANNEL)) {
 				connected.set(true);
 				connectionState = State.CONNECTED;
 				BusProvider.getInstance().post(
-						new FayeConnectedEvent(connected.get()));
-			} else if (_m.getChannel().equals(config.DISCONNECT_CHANNEL)) {
+						new ConnectedEvent(connected.get()));
+			} else if (msg.getChannel().equals(config.DISCONNECT_CHANNEL)) {
 				connected.set(false);
 				connectionState = State.DISCONNECTED;
 				BusProvider.getInstance().post(
-						new FayeConnectedEvent(connected.get()));
-			} else if (_m.getChannel().equals(config.getSubscribeChannel())) {
-				subscribedChannels.add(_m.getSubscription());
+						new ConnectedEvent(connected.get()));
+			} else if (msg.getChannel().equals(config.getSubscribeChannel())) {
+				subscribedChannels.add(msg.getSubscription());
 				BusProvider.getInstance().post(
-						new FayeSubscribedEvent(_m.getSubscription()));
-			} else if (subscribedChannels.contains(_m.getChannel())) {
-				BusProvider.getInstance().post(
-						new FayeMessageEvent(_m.getData()));
+						new SubscribedEvent(msg.getSubscription()));
+			} else if (subscribedChannels.contains(msg.getChannel())) {
+				BusProvider.getInstance().post(new MessageEvent(msg.getData()));
+			} else {
+				BusProvider.getInstance().post(new UnknownMessageEvent(msg));
 			}
 		}
 	}
 
-	private void handleFailedMessage(Message message) {
-		// FIXME Handle a message failure
-	}
-
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+		// FIXME Handle socket close
 	}
 
 	@Override
 	public void onError(Exception ex) {
-		// To change body of implemented methods use File | Settings | File
-		// Templates.
+		// FIXME Investigate what errors can be handled by the websocket client
+		BusProvider.getInstance().post(
+				new ErrorEvent("Socket Error", ErrorEvent.ErrorType.CONNECTION,
+						ex));
 	}
 
+	// endregion
+
 	public void addSubscription(String channel) {
-		subscribedChannels.add(channel);
+		// FIXME Kickoff channel subscription
+	}
+
+	private void handleFailedMessage(Message message) {
+		ErrorEvent.ErrorType errorType;
+		if (message.getChannel().equals(config.HANDSHAKE_CHANNEL)
+				|| message.getChannel().equals(config.CONNECT_CHANNEL)
+				|| message.getChannel().equals(config.DISCONNECT_CHANNEL))
+			errorType = ErrorEvent.ErrorType.CONNECTION;
+		else if (message.getChannel().equals(config.SUBSCRIBE_CHANNEL)
+				|| message.getChannel().equals(config.UNSUBSCRIBE_CHANNEL))
+			errorType = ErrorEvent.ErrorType.SUBSCRIPTION;
+		else
+			errorType = ErrorEvent.ErrorType.MESSAGE;
+		BusProvider.getInstance().post(
+				new ErrorEvent(message.getError(), errorType, null));
+
+	}
+
+	private void handleAdvice(Advice advice) {
+		// FIXME Handle advice
 	}
 
 	// endregion
@@ -194,8 +225,8 @@ public class Client extends WebSocketClient {
 	// region >> PRODUCERS
 
 	@Produce
-	public FayeConnectedEvent produceConnected() {
-		return new FayeConnectedEvent(connected.get());
+	public ConnectedEvent produceConnected() {
+		return new ConnectedEvent(connected.get());
 	}
 
 	// endregion
@@ -221,11 +252,10 @@ public class Client extends WebSocketClient {
             */
     //@formatter:on
 	public enum State {
-		DISCONNECTED, CONNECTING, CONNECTED, DISCONNECTING;
+		DISCONNECTED, CONNECTING, CONNECTED, DISCONNECTING, ERROR;
 	}
 
 	//@formatter:off
-
     /**
      * A configuration for a Faye Client, provides the client with its meta URLs
      * Copyright (c) 2013 Berwyn Codeweaver

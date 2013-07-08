@@ -1,4 +1,3 @@
-# Java
 *.class
 
 # Package Files #
@@ -6,16 +5,11 @@
 *.war
 *.ear
 
-# Maven
-target/
-
-# IntelliJ
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# Eclipse
 *.pydevproject
 .project
 .metadata
@@ -53,21 +47,4 @@ Desktop.ini
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
 
-# OS X
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Linux
-.*
-!.gitignore
-*~
+target/
