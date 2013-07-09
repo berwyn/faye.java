@@ -13,10 +13,9 @@ import org.codeweaver.faye.event.*;
 import org.codeweaver.faye.model.Advice;
 import org.codeweaver.faye.model.Message;
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
-import com.squareup.otto.Produce;
+import org.java_websocket.handshake.ServerHandshake;
 
 /**
  * A client object for Faye.
@@ -218,15 +217,6 @@ public class Client extends WebSocketClient {
 
 	private void handleAdvice(Advice advice) {
 		// FIXME Handle advice
-	}
-
-	// endregion
-
-	// region >> PRODUCERS
-
-	@Produce
-	public ConnectedEvent produceConnected() {
-		return new ConnectedEvent(connected.get());
 	}
 
 	// endregion
