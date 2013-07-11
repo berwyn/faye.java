@@ -9,6 +9,9 @@
 # Maven
 target/
 
+# Gradle
+build/
+
 # IntelliJ
 *.iml
 *.ipr

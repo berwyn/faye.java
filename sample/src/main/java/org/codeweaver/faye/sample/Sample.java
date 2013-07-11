@@ -21,8 +21,12 @@ public class Sample {
 
 	public Sample() {
 		faye = Client.with("localhost:8080");
-		faye.connect();
-	}
+        try {
+            faye.connectBlocking();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 	@Subscribe
 	public void onConnectEvent(ConnectedEvent connectedEvent) {

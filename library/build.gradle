@@ -1,0 +1,119 @@
+import org.gradle.api.XmlProvider
+import org.gradle.api.artifacts.maven.MavenDeployment
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'org.codeweaver.faye'
+version = '1.0.0'
+ext.packaging = 'jar'
+
+def isDevbuild
+def isReleaseBuild
+
+def sonatypeRepoUrl
+
+if (hasProperty("release")) {
+    isReleaseBuild = true
+    sonatypeRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+} else {
+    isDevbuild = true
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'org.java-websocket:Java-WebSocket:1.3.+'
+    compile 'com.google.guava:guava:14.0.+'
+}
+
+// Tasks
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'builds/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task wrapper(type: Wrapper) {
+    group = 'Buildmaster'
+    description = 'Generates gradlew and gradlew.bat bootstrap scripts'
+    gradleVersion = '1.6'
+}
+
+// Maven!
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    if (isReleaseBuild) {
+        sign configurations.archives
+    } else {
+        task signArchives {
+            // Do nothing
+        }
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'faye-java'
+    }
+}
+
+uploadArchives {
+    repositories {
+        if (isDevbuild) {
+            mavenLocal()
+        } else {
+            mavenDeployer {
+                if(isReleaseBuild) {
+                    beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+                }
+
+                repository(url: sonatypeRepoUrl) {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                pom.project {
+                    artifactId 'faye-java'
+                    name 'faye-java'
+                    packaging 'jar'
+                    description 'A Faye client for J2SE and Android'
+                    url 'http://github.com/berwyn/faye.java'
+                    scm {
+                        url 'scm:git@github.com:berwyn/faye.java.git'
+                        connection 'scm:git@github.com:berwyn/faye.java.git'
+                        developerConnection 'scm:git@github.com:berwyn/faye.java.git'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'berwyn'
+                            name 'Berwyn Codeweaver'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
