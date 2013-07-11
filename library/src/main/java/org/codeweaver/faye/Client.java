@@ -1,24 +1,4 @@
-package org.codeweaver.faye;
-
-//@formatter:off
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.codeweaver.faye.event.*;
-import org.codeweaver.faye.model.Advice;
-import org.codeweaver.faye.model.Message;
-import org.java_websocket.client.WebSocketClient;
-
-import com.google.gson.Gson;
-import org.java_websocket.handshake.ServerHandshake;
-
 /**
- * A client object for Faye.
  * Copyright (c) 2011-2013 Berwyn Codeweaver
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +12,30 @@ import org.java_websocket.handshake.ServerHandshake;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+package org.codeweaver.faye;
+
+//@formatter:off
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.codeweaver.faye.event.*;
+import org.codeweaver.faye.model.Advice;
+import org.codeweaver.faye.model.Message;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import com.google.gson.Gson;
+
+/**
+ * A client object for Faye.
  *
  * @author Berwyn Codeweaver <berwyn.codeweaver@gmail.com>
  */
@@ -139,7 +143,7 @@ public class Client extends WebSocketClient {
 
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
-		// FIXME Kickoff Faye handshake and set status to connecting
+		write(generateHandshakeMessage());
 	}
 
 	@Override
@@ -157,7 +161,7 @@ public class Client extends WebSocketClient {
 
 			if (msg.getChannel().equals(config.HANDSHAKE_CHANNEL)) {
 				this.clientID = msg.getClientId();
-				// FIXME Start connection procedure
+				write(generateConnectMessage());
 			} else if (msg.getChannel().equals(config.CONNECT_CHANNEL)) {
 				connected.set(true);
 				connectionState = State.CONNECTED;
@@ -193,10 +197,16 @@ public class Client extends WebSocketClient {
 						ex));
 	}
 
+	private void write(Message payload) {
+		String json = gson.toJson(payload);
+		byte[] bytes = json.getBytes(Charset.forName("UTF-8"));
+		getConnection().send(bytes);
+	}
+
 	// endregion
 
 	public void addSubscription(String channel) {
-		// FIXME Kickoff channel subscription
+		write(generateSubscribeMessage(channel));
 	}
 
 	private void handleFailedMessage(Message message) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (C) 2013, Berwyn Codeweaver
+ Copyright (C) 2013 Berwyn Codeweaver
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -25,9 +25,8 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>faye-java</artifactId>
-    <packaging>jar</packaging>
-    <name>Faye for Java</name>
+    <artifactId>faye-java-sample</artifactId>
+    <name>Faye for Java (Sample)</name>
 
     <build>
         <finalName>${binary.prefix}-${project.artifactId}-${project.version}</finalName>
@@ -42,25 +41,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.4</version>
-            <optional>false</optional>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.3.0</version>
-            <optional>false</optional>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-            <optional>false</optional>
-            <scope>compile</scope>
+            <groupId>org.codeweaver.faye</groupId>
+            <artifactId>faye-java</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
